@@ -8,16 +8,17 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例： 数组对象">
+  <meta name="description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Once More">
 <meta property="og:url" content="http://example.com/2021/07/12/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8BMonitor%E3%80%81%E6%97%A0%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%92%8C%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/index.html">
 <meta property="og:site_name" content="Once More">
-<meta property="og:description" content="一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例： 数组对象">
+<meta property="og:description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/assets/20210621200305484.png">
+<meta property="og:image" content="http://example.com/assets/20210621200321114.png">
 <meta property="article:published_time" content="2021-07-12T13:04:44.428Z">
-<meta property="article:modified_time" content="2021-07-12T13:05:42.486Z">
+<meta property="article:modified_time" content="2021-07-12T13:18:03.194Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/assets/20210621200305484.png">
@@ -153,7 +154,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="一-Monitor"><a href="#一-Monitor" class="headerlink" title="一. Monitor"></a>一. Monitor</h1><p>在理解monitor之前，先来了解一下Java对象头：</p>
+        <p>title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁</p>
+<h1 id="一-Monitor"><a href="#一-Monitor" class="headerlink" title="一. Monitor"></a>一. Monitor</h1><p>在理解monitor之前，先来了解一下Java对象头：</p>
 <blockquote>
 <p>对象头<br>对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：</p>
 <ul>
@@ -162,8 +164,8 @@
 <li>数组的长度（只有数组的对象用到）</li>
 </ul>
 </blockquote>
-<p>以32位虚拟机为例：</p>
-<p><strong>数组对象</strong><br><img src="/assets/20210621200305484.png" alt="20210621200305484"></p>
+<p>以32位虚拟机为例：<br><img src="/assets/20210621200305484.png" alt="20210621200305484"></p>
+<p><img src="/assets/20210621200321114.png" alt="20210621200321114"></p>
 
       
 
