@@ -6,14 +6,14 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Once More</title>
+  <title>java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 | Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视">
+  <meta name="description" content="一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视器或管程，可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每一个Jav">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Once More">
+<meta property="og:title" content="java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁">
 <meta property="og:url" content="http://example.com/2021/07/12/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8BMonitor%E3%80%81%E6%97%A0%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%92%8C%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/index.html">
 <meta property="og:site_name" content="Once More">
-<meta property="og:description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视">
+<meta property="og:description" content="一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视器或管程，可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每一个Jav">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/assets/20210621200305484.png">
 <meta property="og:image" content="http://example.com/assets/20210621200321114.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://example.com/assets/20210621212848251.png">
 <meta property="og:image" content="http://example.com/assets/20210621212919209.png">
 <meta property="article:published_time" content="2021-07-12T13:04:44.428Z">
-<meta property="article:modified_time" content="2021-07-12T13:45:05.354Z">
+<meta property="article:modified_time" content="2021-07-12T13:48:16.567Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/assets/20210621200305484.png">
@@ -166,10 +166,24 @@
             <article id="post-java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁
+    </h1>
+  
+
+        
+        <a href="/2021/07/12/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8BMonitor%E3%80%81%E6%97%A0%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%92%8C%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/" class="archive-article-date">
+  	<time datetime="2021-07-12T13:04:44.428Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-12</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁</p>
-<h1 id="一-Monitor"><a href="#一-Monitor" class="headerlink" title="一. Monitor"></a>一. Monitor</h1><p>在理解monitor之前，先来了解一下Java对象头：</p>
+        <h1 id="一-Monitor"><a href="#一-Monitor" class="headerlink" title="一. Monitor"></a>一. Monitor</h1><p>在理解monitor之前，先来了解一下Java对象头：</p>
 <blockquote>
 <p>对象头<br>对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：</p>
 <ul>
