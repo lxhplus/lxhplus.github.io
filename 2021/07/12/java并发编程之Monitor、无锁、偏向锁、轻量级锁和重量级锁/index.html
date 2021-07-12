@@ -8,17 +8,31 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：">
+  <meta name="description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Once More">
 <meta property="og:url" content="http://example.com/2021/07/12/java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8BMonitor%E3%80%81%E6%97%A0%E9%94%81%E3%80%81%E5%81%8F%E5%90%91%E9%94%81%E3%80%81%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E5%92%8C%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/index.html">
 <meta property="og:site_name" content="Once More">
-<meta property="og:description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：">
+<meta property="og:description" content="title: java并发编程之Monitor、无锁、偏向锁、轻量级锁和重量级锁 一. Monitor在理解monitor之前，先来了解一下Java对象头：  对象头对象头是java中对象都具有的属性，是jvm在编译和运行阶段读取的信息。对象头包含三个部分：  mark word 指针向类的指针 数组的长度（只有数组的对象用到）   以32位虚拟机为例：   1.概念 Monitor 被翻译为监视">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/assets/20210621200305484.png">
 <meta property="og:image" content="http://example.com/assets/20210621200321114.png">
+<meta property="og:image" content="http://example.com/assets/20210621200821755.png">
+<meta property="og:image" content="http://example.com/assets/20210621201359127.png">
+<meta property="og:image" content="http://example.com/assets/20210621214837893.png">
+<meta property="og:image" content="http://example.com/assets/20210621214820344.png">
+<meta property="og:image" content="http://example.com/assets/20210621203202576.png">
+<meta property="og:image" content="http://example.com/assets/20210621203635514.png">
+<meta property="og:image" content="http://example.com/assets/20210621203751897.png">
+<meta property="og:image" content="http://example.com/assets/20210621203952892.png">
+<meta property="og:image" content="http://example.com/assets/20210621204124993.png">
+<meta property="og:image" content="http://example.com/assets/2021062120445995.png">
+<meta property="og:image" content="http://example.com/assets/20210621204801817.png">
+<meta property="og:image" content="http://example.com/assets/20210621212751728.png">
+<meta property="og:image" content="http://example.com/assets/20210621212848251.png">
+<meta property="og:image" content="http://example.com/assets/20210621212919209.png">
 <meta property="article:published_time" content="2021-07-12T13:04:44.428Z">
-<meta property="article:modified_time" content="2021-07-12T13:18:03.194Z">
+<meta property="article:modified_time" content="2021-07-12T13:45:05.354Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/assets/20210621200305484.png">
@@ -166,6 +180,109 @@
 </blockquote>
 <p>以32位虚拟机为例：<br><img src="/assets/20210621200305484.png" alt="20210621200305484"></p>
 <p><img src="/assets/20210621200321114.png" alt="20210621200321114"></p>
+<p><img src="/assets/20210621200821755.png" alt="20210621200821755"></p>
+<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h2><blockquote>
+<p>Monitor 被翻译为监视器或管程，可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每一个Java对象就有一把看不见的锁(C语言实现)，称为内部锁或者Monitor锁。如果使用 synchronized给对象上锁（重量级）之后，该对象头的Mark Word 中就被设置指向 Monitor 对象的指针</p>
+</blockquote>
+<p>1.monitor结构如下</p>
+<p><img src="/assets/20210621201359127.png" alt="20210621201359127"></p>
+<blockquote>
+<ul>
+<li>Owner: 当前持有monitor的线程</li>
+<li>EntryList：等待锁block状态的线程队列</li>
+<li>WaitSet：处于wait状态的线程队列，即调用wait()方法的线程</li>
+</ul>
+</blockquote>
+<ul>
+<li>刚开始 Monitor 中 Owner 为 null。</li>
+<li>当 Thread-2 执行 synchronized(obj) 就会将 Monitor 的所有者 Owner 置为Thread-2，Monitor中只能有一个 Owner。</li>
+<li>在 Thread-2 上锁的过程中，如果 Thread-3，Thread-4，Thread-5 也来执行 synchronized(obj)，就会进入EntryList，处于BLOCKED状态。</li>
+<li>Thread-2 执行完同步代码块的内容，然后唤醒 EntryList 中等待的线程来竞争锁，竞争时是非公平的。</li>
+<li>图中 WaitSet 中的 Thread-0，Thread-1 是之前获得过锁，调用了wait()方法的线程。</li>
+</ul>
+<h1 id="二-Synchronized-原理"><a href="#二-Synchronized-原理" class="headerlink" title="二.Synchronized 原理"></a>二.Synchronized 原理</h1><p><strong>1.无锁</strong><br><strong>2.偏向锁</strong></p>
+<blockquote>
+<p>轻量级锁在没有竞争时（就自己这个线程），每次重入仍然需要执行 CAS 操作。<br>Java 6 中引入了偏向锁来做进一步优化：<br>只有第一次使用 CAS 将线程 ID 设置到对象的 Mark Word 头，以后只需要检测Mark Word里是否存储着指向当前线程的偏向锁，<strong>发现这个线程ID 是自己的就表示没有竞争，不用重新 CAS</strong>。以后只要不发生竞争，这个对象就归该线程所有。</p>
+</blockquote>
+<p><img src="/assets/20210621214837893.png" alt="20210621214837893"></p>
+<p>偏向锁的撤销</p>
+<ul>
+<li>当有其它线程交替使用偏向锁对象时，会将偏向锁升级为轻量级锁。</li>
+<li>调用了锁对象的hashCode，但偏向锁的对象 MarkWord 中存储的是线程 id，如果调用 hashCode 会导致偏向锁被撤销，升级为轻量级锁。</li>
+<li>调用 wait/notify，膨胀成重量级锁。</li>
+</ul>
+<p><strong>3.轻量级锁</strong></p>
+<blockquote>
+<p>轻量级锁是指：当锁是偏向锁的时候，被另外的线程所访问，偏向锁就会升级为轻量级锁。<br>轻量级锁的使用场景：如果一个对象虽然有多线程要加锁，但加锁的时间是错开的（也就是没有竞争，轮流使用锁），那么可以使用轻量级锁来优化。轻量级锁对使用者是透明的，即语法仍然是 synchronized。</p>
+</blockquote>
+<p><img src="/assets/20210621214820344.png" alt="20210621214820344"></p>
+<p>假设Thread-0获得了锁</p>
+<ul>
+<li>创建锁记录（Lock Record）对象，每个线程的栈帧都会包含一个锁记录的结构，内部可以存储锁定对象的Mark Word</li>
+</ul>
+<p><img src="/assets/20210621203202576.png" alt="20210621203202576"></p>
+<ul>
+<li>让锁记录中 Object reference 指向锁对象，并尝试用 CAS（比较并交换） 替换 Object 的 Mark Word，将 Mark Word 的值存入锁记录</li>
+</ul>
+<p><img src="/assets/20210621203635514.png" alt="20210621203635514"></p>
+<ul>
+<li>如果 CAS 替换成功，对象头中存储了 锁记录地址和状态 00 ，表示由该线程给对象加锁，并且此对象处于轻量级锁定状态如这时图示如下。</li>
+</ul>
+<p><img src="/assets/20210621203751897.png" alt="20210621203751897"></p>
+<p>如果 cas 失败，有两种情况：</p>
+<ul>
+<li><p>虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就说明当前线程已经拥有了这个对象的锁，执行了 synchronized 锁重入，那么再添加一条 Lock Record 作为重入的计数，而这时的锁记录地址为null，ObjectReference仍然指向锁对象，否则说明多个线程竞争锁。</p>
+</li>
+<li><p>多个线程竞争锁，若当前只有一个等待线程，则该线程通过自旋进行等待。但是当自旋超过一定的次数，或者一个线程在持有锁，一个在自旋，又有第三个来访时，轻量级锁升级为重量级锁。<br><img src="/assets/20210621203952892.png" alt="20210621203952892"></p>
+</li>
+</ul>
+<ul>
+<li>当退出 synchronized 代码块（解锁时）如果有取值为 null 的锁记录，表示有重入，这时重置锁记录，表示重入计数减一。</li>
+</ul>
+<p><img src="/assets/20210621204124993.png" alt="20210621204124993"></p>
+<ul>
+<li>当退出 synchronized 代码块（解锁时）锁记录的值不为 null，这时使用 CAS 将 Mark Word 的值恢复给对象头。</li>
+<li>成功，则解锁成功。</li>
+<li>失败，说明轻量级锁进行了锁膨胀或已经升级为重量级锁，进入重量级锁解锁流程。</li>
+</ul>
+<p><strong>4.锁膨胀</strong></p>
+<blockquote>
+<p>如果在尝试加轻量级锁的过程中，CAS 操作无法成功，这时一种情况就是有其它线程为此对象加上了轻量级锁（有竞争），这时需要进行锁膨胀，将轻量级锁变为重量级锁。<br>升级为重量级锁时，锁标志的状态值变为“10”，此时Mark Word中存储的是指向重量级锁的指针，此时等待锁的线程都会进入阻塞状态。</p>
+</blockquote>
+<ul>
+<li>假设当 Thread-1 试图进行轻量级加锁时，Thread-0 已经对该对象加了轻量级锁</li>
+</ul>
+<p><img src="/assets/2021062120445995.png" alt="2021062120445995"></p>
+<ul>
+<li>这时 Thread-1 加轻量级锁失败，进入自选等待，自旋超过一定次数后进入锁膨胀流程。</li>
+<li>即为 Object 对象申请 Monitor 锁，让 Object 指向重量级锁地址。</li>
+<li>然后自己进入 Monitor 的 EntryList BLOCKED。</li>
+</ul>
+<p><img src="/assets/20210621204801817.png" alt="20210621204801817"></p>
+<ul>
+<li>当 Thread-0 退出同步块解锁时，使用 CAS 将 Mark Word 的值恢复给对象头，失败，因为此时Mark</li>
+<li>Word的值是Monitor的地址，这时会进入重量级解锁流程。</li>
+<li>即按照 Monitor 地址找到 Monitor 对象，设置 Owner 为 null，唤醒 EntryList 中 BLOCKED 线程。</li>
+</ul>
+<p><strong>为什么说synchronized经过锁膨胀后是重量级锁？</strong></p>
+<blockquote>
+<p>重量级锁的的操作是涉及到操作系统进行互斥操作，就是会把当前线程挂起，然后操作系统进行互斥操作修改，由mutexLock来完成，之后才唤醒。操作系统来判断线程是否加锁，所以它是一个重量级操作。挂起、唤醒这两个操作进行了两次上下文切换，消耗CPU，降低性能。<br>总而言之，重量级锁是依赖对象内部的monitor锁来实现的，而Monitor又依赖操作系统的MutexLock(互斥锁)来实现的，所以重量级锁也称为互斥锁。</p>
+</blockquote>
+<p><strong>5.自旋锁&amp;自旋优化</strong></p>
+<p>阻塞或唤醒一个Java线程需要操作系统切换CPU状态来完成，这种状态转换需要耗费处理器时间。如果同步代码块中的内容过于简单，状态转换消耗的时间有可能比用户代码执行的时间还要长。</p>
+<p>在许多场景中，同步资源的锁定时间很短，为了这一小段时间去切换线程，线程挂起和恢复现场的花费可能会让系统得不偿失。如果物理机器有多个处理器，能够让两个或以上的线程同时并行执行，我们就可以让后面那个请求锁的线程不放弃CPU的执行时间，看看持有锁的线程是否很快就会释放锁。</p>
+<p>而为了让当前线程“稍等一下”，我们需让当前线程进行自旋，如果在自旋完成后前面锁定同步资源的线程已经释放了锁，那么当前线程就可以不必阻塞而是直接获取同步资源，从而避免切换线程的开销。这就是自旋锁。</p>
+<p>重量级锁竞争的时候，还可以使用自旋来进行优化，如果当前线程自旋成功（即这时候持锁线程已经退出了同步块，释放了锁），这时当前线程就可以避免阻塞。</p>
+<p><img src="/assets/20210621212751728.png" alt="20210621212751728"></p>
+<p>自旋重试成功的情况：</p>
+<p><img src="/assets/20210621212848251.png" alt="20210621212848251"></p>
+<p>自旋重试失败的情况：</p>
+<p><img src="/assets/20210621212919209.png" alt="20210621212919209"></p>
+<ul>
+<li>自旋会占用 CPU 时间，单核 CPU 自旋就是浪费，多核 CPU 自旋才能发挥优势。</li>
+<li>在 Java 6 之后自旋锁是自适应的，如果在同一个锁对象上，自旋等待刚刚成功获得过锁，并且持有锁的线程正在运行中，那么虚拟机就会认为这次自旋也是很有可能再次成功，进而它将允许自旋等待持续相对更长的时间。如果对于某个锁，自旋很少成功获得过，那在以后尝试获取这个锁时将可能省略掉自旋过程，直接阻塞线程，避免浪费处理器资源。</li>
+<li>Java 7 之后不能控制是否开启自旋功能。</li>
+</ul>
 
       
 
