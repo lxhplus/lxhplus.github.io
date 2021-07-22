@@ -151,35 +151,7 @@
       
         <h2 id="title-Java排序Comparator实现接口发生异常"><a href="#title-Java排序Comparator实现接口发生异常" class="headerlink" title="title:Java排序Comparator实现接口发生异常"></a>title:Java排序Comparator实现接口发生异常</h2><p><strong>异常场景</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在JDK8环境下，通过实现Comparator接口，对HashMap根据value降序排序</span><br></pre></td></tr></table></figure>
-
-<p><strong>出异常的Comparator</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">private static class ValueComparator implements Comparator&lt;Map.Entry&lt;String, Long&gt;&gt; &#123;</span><br><span class="line">       public int compare(Map.Entry&lt;String, Long&gt; m, Map.Entry&lt;String, Long&gt; n) &#123;</span><br><span class="line">           return n.getValue() &gt; m.getValue() ? 1 : -1;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>异常信息</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.IllegalArgumentException: Comparison method violates its general contract!</span><br></pre></td></tr></table></figure>
-
-<p><strong>异常原因</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JDK7/JDK8的Collections.Sort方法实现中，如果两个值是相等的，那么compare方法需要返回0，否则 **可能** 会在排序时抛错，而JDK6是没有这个限制的。</span><br></pre></td></tr></table></figure>
-
-<p><strong>不同版本JDK中Comparator约束差异</strong></p>
-<p>在 JDK7/JDK8（当前JDK8），Comparator 要满足<code>自反性</code>、<code>传递性</code>、<code>对称性</code>，不然 Arrays.sort，Collections.sort 会报 IllegalArgumentException 异常。(<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/Comparator.html">JDK7 Comparator</a>,<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">JDK8 Comparator</a>)</p>
-<p>说明：</p>
-<p>1） 自反性：x，y 的比较结果和 y，x 的比较结果相反。</p>
-<p>2） 传递性：x&gt;y,y&gt;z,则 x&gt;z。</p>
-<p>3） 对称性：x=y,则 x,z 比较结果和 y，z 比较结果相同。</p>
-<p><strong>Comparator在实现时需要遵照以下约束：</strong></p>
-<p>sgn(x):=⎧⎩⎨⎪⎪⎪⎪−1,0,1,if x &lt; 0if x = 0if x &gt; 0</p>
-<p>sgn(x): =\begin{cases} -1, &amp; \text{if $x$ &lt; 0}\\\\ 0,&amp; \text{if $x$ = 0}\\\\ 1,&amp; \text{if $x$ &gt; 0} \end{cases}  </p>
-<p><strong>根据约束Comparator实现做如下修改:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private static class ValueComparator implements Comparator&lt;Map.Entry&lt;String, Long&gt;&gt; &#123;</span><br><span class="line">       public int compare(Map.Entry&lt;String, Long&gt; m, Map.Entry&lt;String, Long&gt; n) &#123;</span><br><span class="line">           long x = n.getValue().longValue();</span><br><span class="line">           long y = m.getValue().longValue();</span><br><span class="line">           return (x &lt; y) ? -1 : ((x == y) ? 0 : 1);</span><br><span class="line">           //可以直接使用compareTo方法 </span><br><span class="line">           //return n.getValue().compareTo(m.getValue());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<p>在JDK7/JDK8文档中对Comparator实现虽然说不严格要求遵循约束，比方说上述出异常的Comparator，在执行时不一定会报异常，但是为了程序稳定性，最好是遵循约束。至于JDK7之后的Comparator底层排序实现算法<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Timsort">Timsort</a>原理，可阅读以下几篇文章：</p>
-<p>[Timsort原理介绍]<br><a target="_blank" rel="noopener" href="http://blog.jobbole.com/99681/">深入理解 timsort 算法</a></p>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><blockquote>
-<p><a target="_blank" rel="noopener" href="http://blog.2baxb.me/archives/993">图解JDK7的Comparison method violates its general contract异常</a></p>
-</blockquote>
-<p>本文转自 <a target="_blank" rel="noopener" href="https://blog.csdn.net/gis_101/article/details/78914464">https://blog.csdn.net/gis_101/article/details/78914464</a>，如有侵权，请联系删除。</p>
-
+        
       
 
       
