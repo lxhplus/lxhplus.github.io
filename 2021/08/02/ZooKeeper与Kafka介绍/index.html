@@ -8,17 +8,15 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>ZooKeeper与Kafka关系 | Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ZooKeeper介绍官网：http:&#x2F;&#x2F;zookeeper.apache.org&#x2F; ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。  ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="ZooKeeper与Kafka关系">
 <meta property="og:url" content="http://example.com/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/index.html">
 <meta property="og:site_name" content="Once More">
-<meta property="og:description" content="ZooKeeper介绍官网：http:&#x2F;&#x2F;zookeeper.apache.org&#x2F; ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。  ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019060100115837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pc3MxMTgxMjQ4OTgz,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdn.net/20171116173621197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbmFua2lhbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="article:published_time" content="2021-08-02T06:16:48.936Z">
-<meta property="article:modified_time" content="2021-08-03T16:07:01.150Z">
+<meta property="article:modified_time" content="2021-08-03T16:18:06.448Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019060100115837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pc3MxMTgxMjQ4OTgz,size_16,color_FFFFFF,t_70">
@@ -169,8 +167,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <span id="more"></span>
-<h2 id="ZooKeeper介绍"><a href="#ZooKeeper介绍" class="headerlink" title="ZooKeeper介绍"></a>ZooKeeper介绍</h2><p>官网：<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/">http://zookeeper.apache.org/</a></p>
+        <hr>
+<span id="more"></span>
+<p>ZooKeeper介绍<br>官网：<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/">http://zookeeper.apache.org/</a></p>
 <p>ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。</p>
 <blockquote>
 <p>ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来进行分布式协调，但是这些系统往往都存在分布式单点问题。所以，雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架，以便让开发人员将精力集中在处理业务逻辑上。</p>
@@ -392,7 +391,7 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          (no title)
+          Trace-分布式链路追踪，dubbo架构应用开源组件zipkin
         
       </div>
     </a>
