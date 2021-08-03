@@ -6,15 +6,43 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives | Once More</title>
+  <title>Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+  <meta name="description" content="title:Trace-分布式链路追踪，dubbo架构应用开源组件zipkin">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Once More">
-<meta property="og:url" content="http://example.com/archives/index.html">
+<meta property="og:url" content="http://example.com/2021/08/03/Trace-%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%8Cdubbo%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6zipkin/index.html">
 <meta property="og:site_name" content="Once More">
+<meta property="og:description" content="title:Trace-分布式链路追踪，dubbo架构应用开源组件zipkin">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJwaWFpYlZ2ZVpLeDZVcE4wVjhudVp2bjZQMzI5TUJzM0YzaGliVm5WZG4xZzBpY2NBeWFSaWFYQTJudy82NDA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJCeHBOM2tWQTlpYzVPMG9pY3VEYWZFVVlSaE9RQnRHSGU1ekpyWGZUSXc4aWFpYUNMcGJZRENPZFVRLzY0MA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDI0d0s0a2p6dHZNNlJyU2RwVFFtdmpHZGgwUE5wQWQ3c0VjOVNCTEppYnNTWVhHeWxpYWp3dWRDdy82NDA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJGbFRCcFB6TVhpY09QNldDWVRhcWpGeDZpYzBJd3prbjk0QjIwR2hTYkVIM0tGb0JFS2ljY3VaencvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJIeVhFUXhBYmlhM2pDVkd6MHN3OEQ2Rnh1bk90YnlwSEhNOTZJWmlhQWhucW9Oc0N5R3lpYTJWVncvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJVTklROVVYTEttdHUyRjJnVmhsTk0zbnhkZHNVOFR6UDhIS2lhWldQdGFEWEZpYkZRZ3RDdmh5QS82NDA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJ4cmNjbHFaWXdmY1d2Z2Q1UDlLY1RBNGFlR1gybHhJNklaVVlEOFo3SDZEYXF4d2o1aDNQQ1EvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJmSE1YR093SEdBeXhCRlF4ZmNDQm56aFVKaEFvbEE3RjNxR25KTks5NGV6WTNMRHFUTGJzR1EvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJCNDF1dlBpYnB2WkNCTVRLOHAzVm5RNkx3bW1tRmxyZldWTXR5UnRzOVBBVXVyMWNtVG1pYXZCUS82NDA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJYbjh1Z0NrUVVnSWZIclgwRFdJcnFMSkVHN21XT2JIWlg4R2JBQXBaaWNidjFiemJlQ3ZTWE5RLzY0MA?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJNdUs4eXhsMExnaWJMdmVOSEh6Ymt4MlhpY2Q5cnRyemliYnFUSjFZMnQ1ZEttQUQyS3BmamFUcGcvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDI2dmJUR3h2Tm5nMks0QURpYVc0N0JCeHRBbWNJVmljZ2JMcnMwZ3hsaFBGRG9uREg2YktoTDVpYWcvNjQw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112170656005?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112170801074?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171046694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171118360?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171138351?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171157407?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171217835?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171245940?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171308461?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171326768?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://img-blog.csdn.net/20170112171403972?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="article:published_time" content="2021-08-03T02:04:29.573Z">
+<meta property="article:modified_time" content="2021-08-03T16:05:33.360Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJwaWFpYlZ2ZVpLeDZVcE4wVjhudVp2bjZQMzI5TUJzM0YzaGliVm5WZG4xZzBpY2NBeWFSaWFYQTJudy82NDA?x-oss-process=image/format,png">
   
     <link rel="alternative" href="/atom.xml" title="Once More" type="application/atom+xml">
   
@@ -142,289 +170,325 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Trace-分布式链路追踪，dubbo架构组件zipkin" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="title-Trace-分布式链路追踪，dubbo架构应用开源组件zipkin"><a href="#title-Trace-分布式链路追踪，dubbo架构应用开源组件zipkin" class="headerlink" title="title:Trace-分布式链路追踪，dubbo架构应用开源组件zipkin"></a>title:Trace-分布式链路追踪，dubbo架构应用开源组件zipkin</h2><span id="more"></span>
+
+
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJwaWFpYlZ2ZVpLeDZVcE4wVjhudVp2bjZQMzI5TUJzM0YzaGliVm5WZG4xZzBpY2NBeWFSaWFYQTJudy82NDA?x-oss-process=image/format,png"></p>
+<h1 id="分布式系统为什么需要链路追踪？"><a href="#分布式系统为什么需要链路追踪？" class="headerlink" title="分布式系统为什么需要链路追踪？"></a>分布式系统为什么需要链路追踪？</h1><p>随着互联网业务快速扩展，软件架构也日益变得复杂，为了适应海量用户高并发请求，系统中越来越多的组件开始走向分布式化，如单体架构拆分为微服务、服务内缓存变为分布式缓存、服务组件通信变为分布式消息，这些组件共同构成了繁杂的分布式网络。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJCeHBOM2tWQTlpYzVPMG9pY3VEYWZFVVlSaE9RQnRHSGU1ekpyWGZUSXc4aWFpYUNMcGJZRENPZFVRLzY0MA?x-oss-process=image/format,png"></p>
+<p>微服务架构（极简版）  </p>
+<p>假如现在有一个系统部署了成千上万个服务，用户通过浏览器在主界面上下单一箱茅台酒，结果系统给用户提示：系统内部错误，相信用户是很崩溃的。</p>
+<p>运营人员将问题抛给开发人员定位，开发人员只知道有异常，但是这个异常具体是由哪个微服务引起的就需要逐个服务排查了。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDI0d0s0a2p6dHZNNlJyU2RwVFFtdmpHZGgwUE5wQWQ3c0VjOVNCTEppYnNTWVhHeWxpYWp3dWRDdy82NDA?x-oss-process=image/format,png"></p>
+<p>界面出现异常难以排查后台服务</p>
+<p>开发人员借助日志逐个排查的效率是非常低的，那有没有更好的解决方案了？</p>
+<p>答案是<strong>引入链路追踪系统</strong>。</p>
+<h1 id="什么是链路追踪？"><a href="#什么是链路追踪？" class="headerlink" title="什么是链路追踪？"></a>什么是链路追踪？</h1><p>分布式链路追踪就是将一次分布式请求还原成调用链路，将一次分布式请求的调用情况集中展示，比如各个服务节点上的耗时、请求具体到达哪台机器上、每个服务节点的请求状态等等。</p>
+<p><strong>链路跟踪主要功能：</strong></p>
+<ul>
+<li><strong>故障快速定位</strong>：可以通过调用链结合业务日志快速定位错误信息。</li>
+<li><strong>链路性能可视化</strong>：各个阶段链路耗时、服务依赖关系可以通过可视化界面展现出来。</li>
+<li><strong>链路分析</strong>：通过分析链路耗时、服务依赖关系可以得到用户的行为路径，汇总分析应用在很多业务场景。</li>
+</ul>
+<h1 id="链路追踪基本原理"><a href="#链路追踪基本原理" class="headerlink" title="链路追踪基本原理"></a>链路追踪基本原理</h1><p>链路追踪系统（可能）最早是由Goggle公开发布的一篇论文</p>
+<p>《Dapper, a Large-Scale Distributed Systems Tracing Infrastructure》</p>
+<p>被大家广泛熟悉，所以各位技术大牛们如果有黑武器不要藏起来赶紧去发表论文吧。</p>
+<p>在这篇著名的论文中主要讲述了Dapper链路追踪系统的基本原理和关键技术点。接下来挑几个重点的技术点详细给大家介绍一下。</p>
+<h2 id="Trace"><a href="#Trace" class="headerlink" title="Trace"></a>Trace</h2><p>Trace的含义比较直观，就是链路，指一个请求经过所有服务的路径，可以用下面树状的图形表示。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJGbFRCcFB6TVhpY09QNldDWVRhcWpGeDZpYzBJd3prbjk0QjIwR2hTYkVIM0tGb0JFS2ljY3VaencvNjQw?x-oss-process=image/format,png"></p>
+<p>traceId串联请求形成链路</p>
+<p>图中一条完整的链路是：chrome -&gt; 服务A -&gt; 服务B -&gt; 服务C -&gt; 服务D -&gt; 服务E -&gt; 服务C -&gt; 服务A -&gt; chrome。服务间经过的局部链路构成了一条完整的链路，其中每一条局部链路都用一个全局唯一的traceid来标识。</p>
+<h2 id="Span"><a href="#Span" class="headerlink" title="Span"></a>Span</h2><p>在上图中可以看出来请求经过了服务A，同时服务A又调用了服务B和服务C，但是先调的服务B还是服务C呢？从图中很难看出来，只有通过查看源码才知道顺序。</p>
+<p>为了表达这种父子关系引入了Span的概念。</p>
+<p>同一层级parent id相同，span id不同，span id从小到大表示请求的顺序，从下图中可以很明显看出服务A是先调了服务B然后再调用了C。</p>
+<p>上下层级代表调用关系，如下图服务C的span id为2，服务D的parent id为2，这就表示服务C和服务D形成了父子关系，很明显是服务C调用了服务D。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJIeVhFUXhBYmlhM2pDVkd6MHN3OEQ2Rnh1bk90YnlwSEhNOTZJWmlhQWhucW9Oc0N5R3lpYTJWVncvNjQw?x-oss-process=image/format,png"></p>
+<p>Span使请求具有父子关系  </p>
+<p><strong>总结：通过事先在日志中埋点，找出相同traceId的日志，再加上parent id和span id就可以将一条完整的请求调用链串联起来。</strong></p>
+<h2 id="Annotations"><a href="#Annotations" class="headerlink" title="Annotations"></a>Annotations</h2><p>Dapper中还定义了annotation的概念，用于用户自定义事件，用来辅助定位问题。</p>
+<p><strong>通<strong><strong>常</strong></strong>包含四个注解信息</strong>：</p>
+<p>cs：Client Start，表示客户端发起请求；</p>
+<p>sr：ServerReceived，表示服务端收到请求；</p>
+<p>ss：Server Send，表示服务端完成处理，并将结果发送给客户端；</p>
+<p>cr：ClientReceived，表示客户端获取到服务端返回信息；</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJVTklROVVYTEttdHUyRjJnVmhsTk0zbnhkZHNVOFR6UDhIS2lhWldQdGFEWEZpYkZRZ3RDdmh5QS82NDA?x-oss-process=image/format,png"></p>
+<p>一次请求和响应过程  </p>
+<p>上图中描述了一次请求和响应的过程，四个点也就是对应四个Annotation事件。</p>
+<p>如下面的图表示从客户端调用服务端的一次完整过程。如果要计算一次调用的耗时，只需要将客户端接收的时间点减去客户端开始的时间点，也就是图中时间线上的T4 - T1。如果要计算客户端发送网络耗时，也就是图中时间线上的T2 - T1，其他类似可计算。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJ4cmNjbHFaWXdmY1d2Z2Q1UDlLY1RBNGFlR1gybHhJNklaVVlEOFo3SDZEYXF4d2o1aDNQQ1EvNjQw?x-oss-process=image/format,png"></p>
+<p>请求和响应的时间线  </p>
+<h2 id="带内数据与带外数据"><a href="#带内数据与带外数据" class="headerlink" title="带内数据与带外数据"></a>带内数据与带外数据</h2><p>链路信息的还原依赖于<strong>带内</strong>和<strong>带外</strong>两种数据。</p>
+<p>带外数据是各个节点产生的事件，如cs，ss，这些数据可以由节点独立生成，并且需要集中上报到存储端。通过带外数据，可以在存储端分析更多链路的细节。</p>
+<p>带内数据如traceid,spanid,parentid，用来标识trace，span，以及span在一个trace中的位置，这些数据需要从链路的起点一直传递到终点。通过带内数据的传递，可以将一个链路的所有过程串起来。</p>
+<h2 id="采样"><a href="#采样" class="headerlink" title="采样"></a>采样</h2><p>由于每一个请求都会生成一个链路，为了减少性能消耗，避免存储资源的浪费，dapper并不会上报所有的span数据，而是使用采样的方式。举个例子，每秒有1000个请求访问系统，如果设置采样率为1/1000，那么只会上报一个请求到存储端。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJmSE1YR093SEdBeXhCRlF4ZmNDQm56aFVKaEFvbEE3RjNxR25KTks5NGV6WTNMRHFUTGJzR1EvNjQw?x-oss-process=image/format,png"></p>
+<p>数据采样</p>
+<p>通过采集端自适应地调整采样率，控制span上报的数量，可以在发现性能瓶颈的同时，有效减少性能损耗。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJCNDF1dlBpYnB2WkNCTVRLOHAzVm5RNkx3bW1tRmxyZldWTXR5UnRzOVBBVXVyMWNtVG1pYXZCUS82NDA?x-oss-process=image/format,png"></p>
+<p>存储多样化</p>
+<p>链路中的span数据经过收集和上报后会集中存储在一个地方，Dapper使用了BigTable数据仓库，常用的存储还有ElasticSearch, HBase, In-memory DB等。</p>
+<h1 id="业界常用链路追踪系统"><a href="#业界常用链路追踪系统" class="headerlink" title="业界常用链路追踪系统"></a>业界常用链路追踪系统</h1><p>Google Dapper论文发出来之后，很多公司基于链路追踪的基本原理给出了各自的解决方案，如Twitter的Zipkin，Uber的Jaeger，pinpoint，Apache开源的skywalking，还有国产如阿里的鹰眼，美团的Mtrace，滴滴Trace，新浪的Watchman，京东的Hydra，不过国内的这些基本都没有开源。</p>
+<p>为了便于各系统间能彼此兼容互通，OpenTracing组织制定了一系列标准，旨在让各系统提供统一的接口。</p>
+<p>下面对比一下几个开源组件，方便日后大家做技术选型。</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJYbjh1Z0NrUVVnSWZIclgwRFdJcnFMSkVHN21XT2JIWlg4R2JBQXBaaWNidjFiemJlQ3ZTWE5RLzY0MA?x-oss-process=image/format,png"></p>
+<p>开源组件对比</p>
+<p>附各大开源组件的地址：</p>
+<ul>
+<li>zipkin  -&gt; <a target="_blank" rel="noopener" href="https://zipkin.io/">https://zipkin.io/</a></li>
+<li>Jaeger  -&gt; <a target="_blank" rel="noopener" href="https://www.jaegertracing.io/">https://www.jaegertracing.io/</a></li>
+<li>Pinpoint  -&gt; <a target="_blank" rel="noopener" href="https://github.com/pinpoint-apm/pinpoint">https://github.com/pinpoint-apm/pinpoint</a></li>
+<li>SkyWalking  -&gt;  <a target="_blank" rel="noopener" href="http://skywalking.apache.org/">http://skywalking.apache.org/</a></li>
+</ul>
+<p>接下来介绍一下Zipkin基本实现。</p>
+<h1 id="分布式链路追踪系统Zipkin实现"><a href="#分布式链路追踪系统Zipkin实现" class="headerlink" title="分布式链路追踪系统Zipkin实现"></a>分布式链路追踪系统Zipkin实现</h1><p>Zipkin 是 Twitter 的一个开源项目，它基于 Google Dapper 实现，它致力于收集服务的定时数据，以解决微服务架构中的延迟问题，包括数据的收集、存储、查找和展现。</p>
+<h2 id="Zipkin基本架构"><a href="#Zipkin基本架构" class="headerlink" title="Zipkin基本架构"></a><strong>Zipkin基本架构</strong></h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDJNdUs4eXhsMExnaWJMdmVOSEh6Ymt4MlhpY2Q5cnRyemliYnFUSjFZMnQ1ZEttQUQyS3BmamFUcGcvNjQw?x-oss-process=image/format,png"></p>
+<p>Zipkin架构  </p>
+<p>在服务运行的过程中会产生很多链路信息，产生数据的地方可以称之为Reporter。将链路信息通过多种传输方式如HTTP，RPC，kafka消息队列等发送到Zipkin的采集器，Zipkin处理后最终将链路信息保存到存储器中。运维人员通过UI界面调用接口即可查询调用链信息。</p>
+<h2 id="Zipkin核心组件"><a href="#Zipkin核心组件" class="headerlink" title="Zipkin核心组件"></a><strong>Zipkin核心组件</strong></h2><p>Zipkin有四大核心组件</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy9SWHZIcFZpYXozRXFRVHJ0MnpyOEpRNW5iNUhCbU03dDI2dmJUR3h2Tm5nMks0QURpYVc0N0JCeHRBbWNJVmljZ2JMcnMwZ3hsaFBGRG9uREg2YktoTDVpYWcvNjQw?x-oss-process=image/format,png"></p>
+<p>Zipkin核心组件</p>
+<p><strong>（1）Collector</strong></p>
+<p>一旦Collector采集线程获取到链路追踪数据，Zipkin就会对其进行验证、存储和索引，并调用存储接口保存数据，以便进行查找。</p>
+<p><strong>（2）Storage</strong></p>
+<p>Zipkin Storage最初是为了在Cassandra上存储数据而构建的，因为Cassandra是可伸缩的，具有灵活的模式，并且在Twitter中大量使用。除了Cassandra，还支持支持ElasticSearch和MySQL存储，后续可能会提供第三方扩展。</p>
+<p><strong>（3）Query Service</strong></p>
+<p>链路追踪数据被存储和索引之后，webui 可以调用query service查询任意数据帮助运维人员快速定位线上问题。query service提供了简单的json api来查找和检索数据。</p>
+<p><strong>（4）Web UI</strong></p>
+<p>Zipkin 提供了基本查询、搜索的web界面，运维人员可以根据具体的调用链信息快速识别线上问题。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li>分布式链路追踪就是将每一次分布式请求还原成调用链路。</li>
+<li>链路追踪的核心概念：Trace、Span、Annotation、带内和带外数据、采样、存储。</li>
+<li>业界常用的开源组件都是基于谷歌Dapper论文演变而来；</li>
+<li>Zipkin核心组件有：Collector、Storage、Query Service、Web UI。</li>
+</ol>
+<p>很多时候，我们都能体会到分布式架构的话好处，其实一个系统不大，做分布式的成本是很高的，系统变得松耦合，这样做的好处不言而喻，说说坏处吧，A系统远程调用B系统，B系统又依赖C,D系统，当线上某个接口报错，或者超时的时候，亦或者是业务问题的时候，定位一个问题是麻烦的，因为日记不在一个系统里面，排查问题的时候，需要花费很大的时间，往往定位问题的所在比解决这个问题花的时间长的多，所以解决这个问题，才会出来N多优秀的链路监控追踪系统。</p>
+<p>  可惜，很多优秀的链路监控并没有开源~</p>
+<p>其实链路追踪的实现的比较粗浅的理解（我的理解），其实就是前后filter，在filter中做埋点，记录调用的时间，参数，异常，等等信息，分布式系统需要多做的一件事就是有一个全局的变量（全局调用Id）来将整个调用链连接起来，形成调用闭环，最后最好再有一个可视化的监控平台，这样就可以帮助我们去查询问题的所在了。</p>
+<p>5.2.1 简介Zipkin</p>
+<p>5.2.1.1 走进Zipkin</p>
+<p>如果不借助任何的第三方的jar包，单纯解决这种问题，还是比较困难的。简单的说下开源的Zipkin,Zipkin官网：<a target="_blank" rel="noopener" href="http://zipkin.io/">http://zipkin.io/</a></p>
+<p><img src="https://img-blog.csdn.net/20170112170656005?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>Zipkin是一个分布式追踪系统，当我们在微服务架构中遇到潜在问题的时候，它会帮助我们按照时间的顺序有规则的去收集数据，并且帮我们管理数据和查询有用的数据，Zipkin是根据Google的论文Dapper设计的（dapper (dutch) = brave (english)）</p>
+<p>Zipkin目的是用来记录应用程序的时间数据日记的，Zipkin UI还提供了一个系统之间的调用依赖图来向我们展示各个系统之间的请求链路关系，如果你遇到了一些bug或者系统报错的时候，你可以使用Zipkin UI来过滤，排序，通过这样的方式去排查问题，你可以在Zipkin中清晰的看见整个调用过程的链路长度，注释，时间戳，当你选择一条那个出问题的具体链路，你可以清晰的看见每个调用段占整个调用段的时间占比，这样就能够帮助你找到问题链路或者超时链路</p>
+<p>5.2.1.2 Zipkin 搭建</p>
+<p>作为学习用，Zipkin的搭建还是很简单的，它是默认使用内存做数据存储的，当然它也支持Elasticsearch,Mysql等做数据存储的，简单地搭建作为学习用的话，使用内存就可以了，生产环境还是使用Elasticsearch比较好，mysql性能也是堪忧</p>
+<p>Windows7下搭建Zipkin，先打开<a target="_blank" rel="noopener" href="http://zipkin.io/pages/quickstart.html">http://zipkin.io/pages/quickstart.html</a></p>
+<p><img src="https://img-blog.csdn.net/20170112170801074?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>点击Lastest release</p>
+<p><img src="https://img-blog.csdn.net/20170112171046694?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>下载好之后：</p>
+<p><img src="https://img-blog.csdn.net/20170112171118360?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>进入下载好的目录,运行命令java-jar zipkin-server-1.19.1-exec.jar</p>
+<p><img src="https://img-blog.csdn.net/20170112171138351?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>因为是spring boot项目所以能够直接启动，浏览器打开localhost:9411</p>
+<p><img src="https://img-blog.csdn.net/20170112171157407?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>这样就完成了最简单的基于内存的Zipkin的搭建了</p>
+<p>5.2.1.3 Zipkin 简单说明</p>
+<p>Zipkin的简单设计原理图：</p>
+<p><img src="https://img-blog.csdn.net/20170112171217835?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>上图中，Instrumented client 目标服务消费者，如果它是需要进行链路导航的，它会在调用的时候，它会将在调用服务的时候，把一些参数通过Transport传递给Zipkin，同样当服务提供者接收到调用者的请求的时候，也会得到调用的上下文，也会把调用的信息，返回的信息形成Reporter通过Transport传递给Zipkin，相反，如果某些服务没有开启导航功能，则不会发出Reporter，Zipkin通过信息收集器（Collector）获取到信息之后，进行存储，然后形成调用查询的API,供UI页面查询。</p>
+<p>  用大白话说，就是在远程调用的时候，服务消费者和服务提供者如果需要进行链路追踪，需要把调用的信息通过某个东西的传输给Zipkin，Zipkin帮忙分析记录你的调用过程。</p>
+<p>Zipkin的数据设计和细节简单说明：</p>
+<p>之前说过，Zipkin可以把分布式系统调用的日记集中在一起做分析处理，帮我们在远程调用出问题的时候，快速的定位问题，设计的简单思路就是类似那种filter，在特定的时候，进行数据拦击记录，然后形成固定的格式数据发送给Zipkin做处理。</p>
+<p>考虑一下细节,与具体的使用场景进行结合，比如Dubbo，使用Dubbo在进行远程调用的时候，服务消费者在调用的时候，这个阶段Zipkin定义为CS</p>
+<p><img src="https://img-blog.csdn.net/20170112171245940?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>CS表示客户端开启，客户端开始请求，在这个阶段也会设置span</p>
+<p>当请求通过网络到达服务提供者的时候，便达到了第二个阶段，Zipkin称之为SR</p>
+<p><img src="https://img-blog.csdn.net/20170112171308461?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>SR表示服务端接收，当服务提供者接收到请求的时候，将会去处理这个请求，这个阶段与上一个阶段其实是有上下文连接的，（CS可以在调用的上下文偷偷放置一个全局的TraceId）,当然这个阶段与上个阶段会有网络延迟和时间间隔</p>
+<p>当服务提供者处理好请求准备返回的时候，到了第三个阶段SS</p>
+<p><img src="https://img-blog.csdn.net/20170112171326768?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>SS表示服务端发送请求，这个阶段表示服务端已经完成了请求的处理，然后准备把请求的结果发送回客户端，当然SS与SR之间在时间的维度上的区别就是多了服务消费者的处理时间</p>
+<p>当返回结果通过网络达到服务消费者端的时候，就达到了第四阶段CR</p>
+<p><img src="https://img-blog.csdn.net/20170112171403972?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGludXU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center"></p>
+<p>CR表示客户端接收，当服务消费者接收到服务提供者的响应的时候，这就是表示了Span的结束了，经历了四个阶段，表示整个RPC的调用流程完成了，并且也会被这四个阶段记录.</p>
+<p>5.2.1.4 Zipkin的几个重要的概念：</p>
+<p>上文说有四个阶段，其实在分布式中，这四个阶段其实是在不同的系统中的，如果你想把这四个阶段连接在一起，也是经过处理的，打个比方，这四个节点就像四个珠子，如果你想把这四个珠子串联起来，还需要一条线：</p>
+<p>线的定义（TraceId），链路ID，整个调用流程在CS阶段会形成一个链路ID,接下来的三个阶段公用整个TraceId</p>
+<p>珠子的定义（span），每一个珠子都有一个模型叫做span，也有它的唯一标识SpanId，那么对于Span对象来说，它肯定知道自己上一个珠子的id（ParentId），自己的Id（SpanId）,整个链路的Id（TraceId）</p>
+<p>5.2.1.5 Zipkin 小节</p>
+<p>本小节简单地介绍了Zipkin的几个概念，还有一些细节，不是很好理解，比如Sampled, Flags等等，这些概念在使我们接下来的使用过程中会有些接触，接触到了，代码撸出来了，估计也会理解了。</p>
+<p>微服务架构的项目，一次请求可能会调用多个微服务，这样就会产生多个微服务的请求日志，当我们想要查看整个请求链路的日志时，就会变得困难，所幸的是我们有一些集中日志收集工具，比如很热门的ELK，我们需要把这些日志串联起来，这是一个很关键的问题，如果没有串联起来，查询起来很是很困难，我们的做法是在开始请求系统时生成一个全局唯一的id，这个id伴随这整个请求的调用周期，即当一个服务调用另外一个服务的时候，会往下传递，形成一条链路，当我们查看日志时，只需要搜索这个id，整条链路的日志都可以查出来了。</p>
+<p>现在以dubbo微服务架构为背景，举个栗子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A -&gt; B -&gt; C</span><br></pre></td></tr></table></figure>
+
+<p>我们需要将A/B/C/三个微服务间的日志按照链式打印，我们都知道Dubbo的RpcContext只能做到消费者和提供者共享同一个RpcContext，比如A-&gt;B，那么A和B都可以获取相同内容的RpcContext，但是B-&gt;C时，A和C就无法共享相同内容的RpcContext了，也就是无法做到链式打印日志了。</p>
+<p>那么我们是如何做到呢？</p>
+<p>我们可以用左手交换右手的思路来解决，假设左手是线程的ThreadLocal，右手是RpcContext，那么在交换之前，我们首先将必要的日志信息保存到ThreadLocal中。</p>
+<p><strong>在我们的项目微服务中大致分为两种容器类型的微服务，一种是Dubbo容器，这种容器的特点是只使用spring容器启动，然后使用dubbo进行服务的暴露，然后将服务注册到zookeeper，提供服务给消费者；另一种是SpringMVC容器，也即是我们常见的WEB容器，它是我们项目唯一可以对外开放接口的容器，也是充当项目的网关功能。</strong></p>
+<p>在了解了微服务容器之后，我们现在知道了调用链的第一层一定是在SpringMVC容器层中，那么我们直接在这层写个自定义拦截器就ojbk了，talk is cheap，show you the demo code：</p>
+<p>举例一个Demo代码，公共拦截器的前置拦截中代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class CommonInterceptor implements HandlerInterceptor &#123;    @Override    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler)        throws Exception &#123;        // ...        // 初始化全局的Context容器        Request request = initRequest(httpServletRequest);        // 新建一个全局唯一的请求traceId，并set进request中        request.setTraceId(JrnGenerator.genTraceId());        // 将初始化的请求信息放进ThreadLocal中        Context.initialLocal(request);        // ...        return true;    &#125;    // ...&#125;class CommonInterceptor implements HandlerInterceptor &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler)  </span><br><span class="line">        throws Exception &#123;  </span><br><span class="line">  </span><br><span class="line">        // ...  </span><br><span class="line">  </span><br><span class="line">        // 初始化全局的Context容器  </span><br><span class="line">        Request request = initRequest(httpServletRequest);  </span><br><span class="line">        // 新建一个全局唯一的请求traceId，并set进request中  </span><br><span class="line">        request.setTraceId(JrnGenerator.genTraceId());  </span><br><span class="line">        // 将初始化的请求信息放进ThreadLocal中  </span><br><span class="line">        Context.initialLocal(request);  </span><br><span class="line">  </span><br><span class="line">        // ...  </span><br><span class="line">  </span><br><span class="line">        return true;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>系统内部上下文对象：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class Context &#123;    // ...    private static final ThreadLocal&lt;Request&gt; REQUEST_LOCAL = new ThreadLocal&lt;&gt;();    public final static void initialLocal(Request request) &#123;        if (null == request) &#123;            return;        &#125;        REQUEST_LOCAL.set(request);    &#125;    public static Request getCurrentRequest() &#123;        return REQUEST_LOCAL.get();    &#125;    // ...&#125;class Context &#123;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">  </span><br><span class="line">    private static final ThreadLocal&lt;Request&gt; REQUEST_LOCAL = new ThreadLocal&lt;&gt;();  </span><br><span class="line">  </span><br><span class="line">    public final static void initialLocal(Request request) &#123;  </span><br><span class="line">        if (null == request) &#123;  </span><br><span class="line">            return;  </span><br><span class="line">        &#125;  </span><br><span class="line">        REQUEST_LOCAL.set(request);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    public static Request getCurrentRequest() &#123;  </span><br><span class="line">        return REQUEST_LOCAL.get();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>拦截器实现了<code>org.springframework.web.servlet.HandlerInterceptor</code>接口，它的主要作用是用于拦截处理请求，可以在MVC层做一些日志记录与权限检查等操作，这相当于MVC层的AOP，即符合横切关注点的所有功能都可以放入拦截器实现。</p>
+<p>这里的<code>initRequest(httpServletRequest);</code>就是将请求信息封装成系统内容的请求对象<code>Request</code>，并初始化一个全局唯一的traceId放进Request中，然后再把它放进系统内部上下文ThreadLocal字段中。</p>
+<p>接下来讲讲如何将ThreadLocal中的内容放到RpcContext中，在讲之前，我先来说说Dubbo基于spi扩展机制，官方文档对拦截器扩展解释如下：</p>
+<blockquote>
+<p>服务提供方和服务消费方调用过程拦截，Dubbo 本身的大多功能均基于此扩展点实现，每次远程方法执行，该拦截都会被执行，请注意对性能的影响。</p>
+</blockquote>
+<p>也就是说我们进行服务远程调用前，拦截器会对此调用进行拦截处理，那么就好办了，在消费者调用远程服务之前，我们可以偷偷把ThreadLocal的内容放进RpcContext容器中，我们可以基于dubbo的spi机制扩展两个拦截器，一个在消费者端生效，另一个在提供者端生效：</p>
+<p>在META-INF中加入com.alibaba.dubbo.rpc.Filter文件，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">provider=com.objcoding.dubbo.filter.ProviderFilterconsumer=com.objcoding.dubbo.filter.ConsumerFilter  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>消费者端拦截处理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class ConsumerFilter implements Filter &#123;    @Override    public Result invoke(Invoker&lt;?&gt; invoker, Invocation invocation)         throws RpcException &#123;        //1.从ThreadLocal获取请求信息        Request request = Context.getCurrentRequest();        //2.将Context参数放到RpcContext        RpcContext rpcCTX = RpcContext.getContext();        // 将初始化的请求信息放进ThreadLocal中        Context.initialLocal(request);        // ...    &#125;   &#125;class ConsumerFilter implements Filter &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public Result invoke(Invoker&lt;?&gt; invoker, Invocation invocation)   </span><br><span class="line">        throws RpcException &#123;  </span><br><span class="line">  </span><br><span class="line">        //1.从ThreadLocal获取请求信息  </span><br><span class="line">        Request request = Context.getCurrentRequest();  </span><br><span class="line">        //2.将Context参数放到RpcContext  </span><br><span class="line">        RpcContext rpcCTX = RpcContext.getContext();  </span><br><span class="line">        // 将初始化的请求信息放进ThreadLocal中  </span><br><span class="line">        Context.initialLocal(request);  </span><br><span class="line">  </span><br><span class="line">        // ...  </span><br><span class="line">  </span><br><span class="line">    &#125;     </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>Context.getCurrentRequest();</code>就是从ThreadLocal中拿到Request请求内容，<code>contextToDubboContext(request);</code>将Request内容放进当前线程的RpcContext容器中。</p>
+<p>很容易联想到提供者也就是把RpcContext中的内容拿出来放到ThreadLocal中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class ProviderFilter extends AbstractDubboFilter implements Filter&#123;     @Override    public Result invoke(Invoker&lt;?&gt; invoker, Invocation invocation)         throws RpcException &#123;        // 1.获取RPC远程调用上下文        RpcContext rpcCTX = RpcContext.getContext();        // 2.初始化请求信息        Request request = dubboContextToContext(rpcCTX);        // 3.将初始化的请求信息放进ThreadLocal中        Context.initialLocal(request);        // ...    &#125;   &#125;class ProviderFilter extends AbstractDubboFilter implements Filter&#123;  </span><br><span class="line">     @Override  </span><br><span class="line">    public Result invoke(Invoker&lt;?&gt; invoker, Invocation invocation)   </span><br><span class="line">        throws RpcException &#123;  </span><br><span class="line">        // 1.获取RPC远程调用上下文  </span><br><span class="line">        RpcContext rpcCTX = RpcContext.getContext();  </span><br><span class="line">        // 2.初始化请求信息  </span><br><span class="line">        Request request = dubboContextToContext(rpcCTX);  </span><br><span class="line">        // 3.将初始化的请求信息放进ThreadLocal中  </span><br><span class="line">        Context.initialLocal(request);  </span><br><span class="line">  </span><br><span class="line">        // ...  </span><br><span class="line">  </span><br><span class="line">    &#125;     </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们还要配置log4j2，使得我们同一条请求在关联的每一个容器打印的消息，都有一个共同的traceId，那么我们在ELK想要查询某个请求时，只需要搜索traceId，就可以看到整条请求链路的日志了。</p>
+<p>我们在Context上下文对象的<code>initialLocal(Request request)</code>方法中在log4j2的上下文中添加traceId信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class Context &#123;    // ...    final public static String TRACEID = &quot;_traceid&quot;;    public final static void initialLocal(Request request) &#123;        if (null == request) &#123;            return;        &#125;        // 在log4j2的上下文中添加traceId        ThreadContext.put(TRACEID, request.getTraceId());        REQUEST_LOCAL.set(request);    &#125;    // ...&#125;class Context &#123;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">  </span><br><span class="line">    final public static String TRACEID = &quot;_traceid&quot;;  </span><br><span class="line">  </span><br><span class="line">    public final static void initialLocal(Request request) &#123;  </span><br><span class="line">        if (null == request) &#123;  </span><br><span class="line">            return;  </span><br><span class="line">        &#125;  </span><br><span class="line">        // 在log4j2的上下文中添加traceId  </span><br><span class="line">        ThreadContext.put(TRACEID, request.getTraceId());  </span><br><span class="line">        REQUEST_LOCAL.set(request);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来实现<code>org.apache.logging.log4j.core.appender.rewrite.RewritePolicy</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Plugin(name = &quot;Rewrite&quot;, category = &quot;Core&quot;, elementType = &quot;rewritePolicy&quot;, printObject = true)public final class MyRewritePolicy implements RewritePolicy &#123;    // ...    @Override    public LogEvent rewrite(final LogEvent source) &#123;        HashMap&lt;String, String&gt; contextMap = Maps.newHashMap(source.getContextMap());        contextMap.put(Context.TRACEID, contextMap.containsKey(Context.TRACEID) ? contextMap.get(Context.TRACEID) : NULL);        return new Log4jLogEvent.Builder(source).setContextMap(contextMap).build();    &#125;    // ...&#125;&quot;Rewrite&quot;, category = &quot;Core&quot;, elementType = &quot;rewritePolicy&quot;, printObject = true)  </span><br><span class="line">public final class MyRewritePolicy implements RewritePolicy &#123;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">  </span><br><span class="line">    @Override  </span><br><span class="line">    public LogEvent rewrite(final LogEvent source) &#123;  </span><br><span class="line">        HashMap&lt;String, String&gt; contextMap = Maps.newHashMap(source.getContextMap());  </span><br><span class="line">        contextMap.put(Context.TRACEID, contextMap.containsKey(Context.TRACEID) ? contextMap.get(Context.TRACEID) : NULL);  </span><br><span class="line">        return new Log4jLogEvent.Builder(source).setContextMap(contextMap).build();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    // ...  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>RewritePolicy的作用是我们每次输出日志，log4j都会调用这个类进行一些处理的操作。</p>
+<p>配置log4j2.xml：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;Configuration status=&quot;warn&quot;&gt;    &lt;Appenders&gt;        &lt;Console name=&quot;Console&quot; target=&quot;SYSTEM_OUT&quot;&gt;            &lt;PatternLayout                pattern=&quot;[%d&#123;yyyy/MM/dd HH:mm:ss,SSS&#125;][$&#123;ctx:_traceid&#125;]%m%n&quot; /&gt;        &lt;/Console&gt;        &lt;!--定义一个Rewrite--&gt;        &lt;Rewrite name=&quot;Rewrite&quot;&gt;            &lt;MyRewritePolicy/&gt;            &lt;!--引用输出模板--&gt;            &lt;AppenderRef ref=&quot;Console&quot;/&gt;        &lt;/Rewrite&gt;    &lt;/Appenders&gt;    &lt;Loggers&gt;        &lt;!--使用日志模板--&gt;        &lt;Logger name=&quot;com.objcoding.MyLogger&quot; level=&quot;debug&quot; additivity=&quot;false&quot;&gt;            &lt;!--引用Rewrite--&gt;            &lt;AppenderRef ref=&quot;Rewrite&quot;/&gt;        &lt;/Logger&gt;    &lt;/Loggers&gt;&lt;/Configuration&gt;  </span><br><span class="line">    &lt;Appenders&gt;  </span><br><span class="line">        &lt;Console name=&quot;Console&quot; target=&quot;SYSTEM_OUT&quot;&gt;  </span><br><span class="line">            &lt;PatternLayout  </span><br><span class="line">                pattern=&quot;[%d&#123;yyyy/MM/dd HH:mm:ss,SSS&#125;][$&#123;ctx:_traceid&#125;]%m%n&quot; /&gt;  </span><br><span class="line">        &lt;/Console&gt;  </span><br><span class="line">  </span><br><span class="line">        &lt;!--定义一个Rewrite--&gt;  </span><br><span class="line">        &lt;Rewrite name=&quot;Rewrite&quot;&gt;  </span><br><span class="line">            &lt;MyRewritePolicy/&gt;  </span><br><span class="line">            &lt;!--引用输出模板--&gt;  </span><br><span class="line">            &lt;AppenderRef ref=&quot;Console&quot;/&gt;  </span><br><span class="line">        &lt;/Rewrite&gt;  </span><br><span class="line">    &lt;/Appenders&gt;  </span><br><span class="line">    &lt;Loggers&gt;  </span><br><span class="line">  </span><br><span class="line">        &lt;!--使用日志模板--&gt;  </span><br><span class="line">        &lt;Logger name=&quot;com.objcoding.MyLogger&quot; level=&quot;debug&quot; additivity=&quot;false&quot;&gt;  </span><br><span class="line">            &lt;!--引用Rewrite--&gt;  </span><br><span class="line">            &lt;AppenderRef ref=&quot;Rewrite&quot;/&gt;  </span><br><span class="line">        &lt;/Logger&gt;  </span><br><span class="line">    &lt;/Loggers&gt;  </span><br><span class="line">&lt;/Configuration&gt;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>自定义日志类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class MyLogger &#123;    private static final Logger logger = LoggerFactory.getLogger(MyLogger.class);     public static void info(String msg, Object... args) &#123;        if (canLog() == 1 &amp;&amp; logger.isInfoEnabled()) &#123;            logger.info(msg, args);        &#125;    &#125;    public static void debug(String message, Object... args) &#123;        if (canLog() == 1 &amp;&amp; logger.isDebugEnabled()) &#123;            logger.debug(message, args);        &#125;    &#125;    // ..&#125;class MyLogger &#123;  </span><br><span class="line">    private static final Logger logger = LoggerFactory.getLogger(MyLogger.class);  </span><br><span class="line">  </span><br><span class="line">     public static void info(String msg, Object... args) &#123;  </span><br><span class="line">        if (canLog() == 1 &amp;&amp; logger.isInfoEnabled()) &#123;  </span><br><span class="line">            logger.info(msg, args);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    public static void debug(String message, Object... args) &#123;  </span><br><span class="line">        if (canLog() == 1 &amp;&amp; logger.isDebugEnabled()) &#123;  </span><br><span class="line">            logger.debug(message, args);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    // ..  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/03/Trace-%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%8Cdubbo%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6zipkin/" class="archive-article-date">
-  	<time datetime="2021-08-03T02:04:29.573Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-03</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2021/08/03/Trace-%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%8Cdubbo%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6zipkin/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
-  	<time datetime="2021-08-02T06:16:48.936Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-02</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ZooKeeper与Kafka关系</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/">ZooKeeper与Kafka关系</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/02/Java%E6%A1%86%E6%9E%B6%EF%BC%9ADubbo%20%E4%B8%8Espringcloud%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8AEureka%E5%92%8CZooKeeper%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2021-08-02T02:06:32.857Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/08/02/Java%E6%A1%86%E6%9E%B6%EF%BC%9ADubbo%20%E4%B8%8Espringcloud%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8AEureka%E5%92%8CZooKeeper%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F/">Dubbo dubbox与springcloud的区别？</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/29/Java%20Bean%E3%80%81VO%E3%80%81DTO%E3%80%81DO%E3%80%81PO%E5%92%8Cweb%E9%A1%B9%E7%9B%AE%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84/" class="archive-article-date">
-  	<time datetime="2021-07-29T01:57:19.559Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/29/Java%20Bean%E3%80%81VO%E3%80%81DTO%E3%80%81DO%E3%80%81PO%E5%92%8Cweb%E9%A1%B9%E7%9B%AE%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84/">Java Bean、VO、DTO、DO、PO和web项目三层结构</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/27/Java%208%20Optional%20%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2021-07-27T05:57:34.643Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-27</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/27/Java%208%20Optional%20%E7%B1%BB/">Java 8 Optional 类</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/26/%E9%98%BF%E9%87%8CJSONObject/" class="archive-article-date">
-  	<time datetime="2021-07-26T02:17:21.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/26/%E9%98%BF%E9%87%8CJSONObject/">阿里JSONObject详解</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/23/Mac%E4%B8%8B%E6%9F%A5%E7%9C%8B%E5%92%8C%E7%94%9F%E6%88%90SSH%E5%AF%86%E9%92%A5/" class="archive-article-date">
-  	<time datetime="2021-07-23T10:12:18.814Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/23/Mac%E4%B8%8B%E6%9F%A5%E7%9C%8B%E5%92%8C%E7%94%9F%E6%88%90SSH%E5%AF%86%E9%92%A5/">Mac下查看和生成SSH密钥</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%B9%E8%A8%80%EF%BC%88dialect%EF%BC%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2021-07-23T01:56:49.287Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%B9%E8%A8%80%EF%BC%88dialect%EF%BC%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/">数据库方言（dialect）是什么？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/22/%E4%B8%80%E7%AF%87%E6%95%99%E4%BD%A0%E5%AD%A6%E4%BC%9AJunit5/" class="archive-article-date">
-  	<time datetime="2021-07-22T09:38:27.256Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/22/%E4%B8%80%E7%AF%87%E6%95%99%E4%BD%A0%E5%AD%A6%E4%BC%9AJunit5/">Junit5</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/22/Java%E6%8E%92%E5%BA%8FComparator%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E5%8F%91%E7%94%9F%E5%BC%82%E5%B8%B8/" class="archive-article-date">
-  	<time datetime="2021-07-22T08:31:41.321Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/22/Java%E6%8E%92%E5%BA%8FComparator%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E5%8F%91%E7%94%9F%E5%BC%82%E5%B8%B8/">Java排序Comparator实现接口发生异常</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &amp;raquo;</a>
-    </nav>
   
 
 
@@ -448,8 +512,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

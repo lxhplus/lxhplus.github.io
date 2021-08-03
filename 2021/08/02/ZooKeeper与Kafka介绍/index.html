@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://example.com">
-  <title>Archives | Once More</title>
+  <title>ZooKeeper与Kafka关系 | Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Once More">
-<meta property="og:url" content="http://example.com/archives/index.html">
+  <meta name="description" content="ZooKeeper介绍官网：http:&#x2F;&#x2F;zookeeper.apache.org&#x2F; ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。  ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZooKeeper与Kafka关系">
+<meta property="og:url" content="http://example.com/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/index.html">
 <meta property="og:site_name" content="Once More">
+<meta property="og:description" content="ZooKeeper介绍官网：http:&#x2F;&#x2F;zookeeper.apache.org&#x2F; ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。  ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019060100115837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pc3MxMTgxMjQ4OTgz,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdn.net/20171116173621197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbmFua2lhbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="article:published_time" content="2021-08-02T06:16:48.936Z">
+<meta property="article:modified_time" content="2021-08-03T16:07:01.150Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/2019060100115837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pc3MxMTgxMjQ4OTgz,size_16,color_FFFFFF,t_70">
   
     <link rel="alternative" href="/atom.xml" title="Once More" type="application/atom+xml">
   
@@ -142,289 +149,289 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-ZooKeeper与Kafka介绍" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      ZooKeeper与Kafka关系
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2021" class="archive-year">2021</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/03/Trace-%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%8Cdubbo%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6zipkin/" class="archive-article-date">
-  	<time datetime="2021-08-03T02:04:29.573Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-03</time>
-</a>
-        </div>
-    	 
-        <div class="article-info info-on-right">
-          
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+        
+        <a href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
   	<time datetime="2021-08-02T06:16:48.936Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-02</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/">ZooKeeper与Kafka关系</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <span id="more"></span>
+<h2 id="ZooKeeper介绍"><a href="#ZooKeeper介绍" class="headerlink" title="ZooKeeper介绍"></a>ZooKeeper介绍</h2><p>官网：<a target="_blank" rel="noopener" href="http://zookeeper.apache.org/">http://zookeeper.apache.org/</a></p>
+<p>ZooKeeper是一个分布式协调服务，它的主要作用是为分布式系统提供一致性服务，提供的功能包括：配置维护、命名服务、分布式同步、组服务等。Kafka的运行依赖ZooKeeper。</p>
+<blockquote>
+<p>ZooKeeper最早起源于雅虎研究院的一个研究小组。在当时，研究人员发现，在雅虎内部很多大型系统基本都需要依赖一个类似的系统来进行分布式协调，但是这些系统往往都存在分布式单点问题。所以，雅虎的开发人员就试图开发一个通用的无单点问题的分布式协调框架，以便让开发人员将精力集中在处理业务逻辑上。</p>
+<p>关于ZooKeeper这个项目的名字，其实也有一段趣闻。在立项初期，考虑到之前内部很多项目都是使用动物的名字来命名的（例如著名的Pig项目),雅虎的工程师希望给这个项目也取一个动物的名字。时任研究院的首席科学家RaghuRamakrishnan开玩笑地说：“在这样下去，我们这儿就变成动物园了！”此话一出，大家纷纷表示就叫动物园管理员吧 一一 因为各个以动物命名的分布式组件放在一起，雅虎的整个分布式系统看上去就像一个大型的动物园了，而ZooKeeper正好要用来进行分布式环境的协调。于是，ZooKeeper的名字也就由此诞生了。</p>
+</blockquote>
+<hr>
+<h3 id="ZooKeeper的数据结构"><a href="#ZooKeeper的数据结构" class="headerlink" title="ZooKeeper的数据结构"></a>ZooKeeper的数据结构</h3><p>类似于Linux的文件系统，是一种树形的结构。如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/</span><br><span class="line">                /     \</span><br><span class="line">	        /       \</span><br><span class="line">            Lang     Service</span><br><span class="line">            / \        /  \</span><br><span class="line">           /   \      /    \</span><br><span class="line">         JAVA   PHP Nginx Tomcat </span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
-          
+<p>如果已经搭建了ZooKeeper服务，可以进入到ZooKeeper命令行终端，然后执行ls /看到下面的目录结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkCli.sh -server test1:2181</span><br><span class="line"></span><br><span class="line">#进入到Zookeeper的命令行终端下面，执行：ls / </span><br></pre></td></tr></table></figure>
 
+<p>树是由节点所组成，ZooKeeper的数据存储也同样是基于节点，这种节点叫做Znode。</p>
+<p><code>/Lang/PHP</code>是一个节点，<code>/Service/Tomcat</code>也是一个节点，这样就可以让每一个Znode拥有唯一的路径。每一个Znode里包含了数据、子节点引用、访问权限等。</p>
+<p><img src="https://img-blog.csdnimg.cn/2019060100115837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pc3MxMTgxMjQ4OTgz,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>如上图，data即Znode里面的数据；ACL为权限规则，它规定了哪些用户或哪些IP才有权限访问此Znode；stat记录了Znode相关的元数据，比如事务ID、版本号、时间戳、大小；child为当前节点的子节点引用，类似于二叉树的左孩子右孩子。ZooKeeper有个限制，就是每个Znode的数据大小不会超过1M。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get /node_name</span><br><span class="line"></span><br><span class="line">getAcl /node_name </span><br></pre></td></tr></table></figure>
+
+<h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><ul>
+<li>  持久节点(persistent)：</li>
+</ul>
+<p>所谓持久节点，是指在节点创建后，就一直存在，直到有删除操作来主动清除这个节点——不会因为创建该节点的客户端会话失效而消失。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create /node &#x27;persistent node&#x27; </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>  持久顺序节点(persistent_sequential，节点会自动加上编号)：</li>
+</ul>
+<p>这类节点的基本特性和上面的节点类型是一致的。额外的特性是，在ZK中，每个父节点会为他的第一级子节点维护一份时序，会记录每个子节点创建的先后顺序。基于这个特性，在创建子节点的时候，可以设置这个属性，那么在创建节点过程中，ZK会自动为给定节点名加上一个数字后缀，作为新的节点名。这个数字后缀的范围是整型的最大值。</p>
+<p>在创建节点的时候只需要传入节点 “/test_”，这样之后，zookeeper自动会在“test_”后面补充数字。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -s /s_node &#x27;persistent sequential&#x27; </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>  临时节点(ephemeral)：</li>
+</ul>
+<p>和持久节点不同，临时节点的生命周期会和客户端会话绑定，即如果客户端会话失效（不是连接端口），那么这个节点就会自动被清除掉。另外，在临时节点下面无法创建子节点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e /e_node &#x27;ephemeral&#x27; </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>  临时顺序节点(ephemeral_sequential)：</li>
+</ul>
+<p>此节点是属于临时节点，不过带有顺序，客户端会话结束节点就消失。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e -s /e_s_node &#x27;ephemeral sequential&#x27; </span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="ZooKeeper集群的角色"><a href="#ZooKeeper集群的角色" class="headerlink" title="ZooKeeper集群的角色"></a>ZooKeeper集群的角色</h3><p>ZooKeeper提供服务时，是需要通过集群来实现，ZooKeeper集群中有一个leader，多个follower角色，其中leader提供写服务，follower提供读服务。</p>
+<h4 id="Leader"><a href="#Leader" class="headerlink" title="Leader"></a>Leader</h4><p>Leader是整个ZooKeeper集群工作机制中的核心 。Leader作为整个ZooKeeper集群的主节点，负责响应所有对ZooKeeper状态变更的请求。其主要工作包括下面两个方面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1）事务请求的唯一调度和处理，保障集群处理事务的顺序性</span><br><span class="line"></span><br><span class="line">2）集群内各服务器的调度者 </span><br></pre></td></tr></table></figure>
+
+<p>Leader选举是ZooKeeper最重要的技术之一，也是保障分布式数据一致性的关键所在。以三台机器为例，在服务器集群初始化阶段，当有一台服务器Server1启动时候是无法完成选举的，当第二台机器Server2启动后两台机器能互相通信，每台机器都试图找到一个Leader，于是便进入了Leader选举流程。</p>
+<p>每个server发出一个投票，投票的最基本元素是SID（服务器id）和ZXID（事物id）–&gt; 接受来自各个服务器的投票 –&gt; 处理投票，优先检查ZXID(数据越新ZXID越大),ZXID比较大的作为leader，ZXID一样的情况下比较SID –&gt; 统计投票，这里有个过半的概念，大于集群机器数量的一半，即大于或等于（n/2+1）。这里是三台，所以大于等于2即为达到“过半”的要求 –&gt; 改变服务器状态，一旦确定了leader，服务器就会更改自己的状态，且一般不会再发生变化。</p>
+<h4 id="Follower"><a href="#Follower" class="headerlink" title="Follower"></a>Follower</h4><p>Follower即跟随者，他的逻辑比较简单。除了响应本服务器上的读请求外，还要处理Leader的提议，并在Leader提交该提议时在本地也进行提交。另外需要注意的是，Leader和Follower构成ZooKeeper集群的法定人数，也就是说，只有他们才参与新Leader的选举、响应Leader的提议。</p>
+<h4 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h4><p>服务器充当一个观察者的角色。如果ZooKeeper集群的读取负载很高，或者客户端多到跨机房，可以设置一些Observer服务器，以提高读取的吞吐量。Observer和Follower比较相似，只有一些小区别：首先Observer不属于法定人数，即不参加选举也不响应提议，也不参与写操作的“过半写成功”策略；其次是Observer不需要将事务持久化到磁盘，一旦Observer被重启，需要从Leader重新同步整个命名空间。</p>
+<hr>
+<h2 id="Kafka介绍"><a href="#Kafka介绍" class="headerlink" title="[]Kafka介绍"></a>[]Kafka介绍</h2><p>Kafka是一款性能非常好的并且支持分布式的消息队列中间件。由于它的高吞吐特性，Kafka通常使用在大数据领域，如日志收集平台。其实Kafka是一个流处理平台，这个概念不太好理解，之所以叫做流，是因为它在工作中就像是一个可以支撑高吞吐量的管道，数据像水一样流进去，然后另外一端再去读取这些数据。我们就可以把Kafka看作是一种特殊的消息队列中间件。</p>
+<p>Kafka与传统消息系统相比，有以下不同：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">它被设计为一个分布式系统，易于向外扩展；</span><br><span class="line">它同时为发布和订阅提供高吞吐量；</span><br><span class="line">它支持多订阅者，当失败时能自动平衡消费者；</span><br><span class="line">它将消息持久化到磁盘，因此可用于批量消费，例如ETL，以及实时应用程序。 </span><br></pre></td></tr></table></figure>
+
+<p>在Kafka中有几个关键角色和概念。</p>
+<ul>
+<li>  Producer</li>
+</ul>
+<p>消息生产者，是消息的产生源头，负责生成消息并发送给Kafka。</p>
+<ul>
+<li>  Consumer</li>
+</ul>
+<p>消息消费者，是消息的使用方，负责消费Kafka服务器上的消息。</p>
+<ul>
+<li>  Topic</li>
+</ul>
+<p>主题，由用户自定义，并配置在Kafka服务器，用于建立生产者和消费者之间的订阅关系，生产者将消息发送到指定的Topic，然后消费者再从该Topic下去取消息。</p>
+<ul>
+<li>  Partition</li>
+</ul>
+<p>消息分区，一个Topic下面会有多个Partition，每个Partition都是一个有序队列，Partition中的每条消息都会被分配一个有序的id。</p>
+<ul>
+<li>  Broker</li>
+</ul>
+<p>这个其实就是Kafka服务器了，无论是单台Kafka还是集群，被统一叫做Broker，有的资料上把它翻译为代理或经纪人。</p>
+<ul>
+<li>  Group</li>
+</ul>
+<p>消费者分组，将同一类的消费者归类到一个组里。在Kafka中，多个消费者共同消费一个Topic下的消息，每个消费者消费其中的部分消息，这些消费者就组成了一个分组，拥有同一个组名。</p>
+<hr>
+<h3 id="Kafka和ZooKeeper"><a href="#Kafka和ZooKeeper" class="headerlink" title="Kafka和ZooKeeper"></a>Kafka和ZooKeeper</h3><p>了解了ZooKeeper和Kafka后，再来看看Zookeeper在Kafka集群中到底担任了一个什么样的角色？</p>
+<p>简单讲，ZooKeeper用于分布式系统的协调，Kafka使用ZooKeeper也是基于相同的原因。ZooKeeper主要用来协调Kafka的各个broker，不仅可以实现broker的负载均衡，而且当增加了broker或者某个broker故障了，ZooKeeper将会通知生产者和消费者，这样可以保证整个系统正常运转。</p>
+<h4 id="Broker注册"><a href="#Broker注册" class="headerlink" title="Broker注册"></a>Broker注册</h4><p>Broker在ZooKeeper中保存为一个临时节点，节点的路径是<code>/brokers/ids/[brokerid]</code>，每个节点会保存对应broker的IP以及端口等信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkCli.sh -server test1:2181</span><br><span class="line"></span><br><span class="line">#进入到Zookeeper的命令行终端下面，执行：ls /brokers/ids </span><br></pre></td></tr></table></figure>
+
+<h4 id="Topic注册"><a href="#Topic注册" class="headerlink" title="Topic注册"></a>Topic注册</h4><p>在Kafka中,一个topic会被分成多个区并被分到多个broker上，分区的信息以及broker的分布情况都保存在ZooKeeper中，根节点路径为<code>/brokers/topics</code>，每个topic都会在topics下建立独立的子节点，每个topic节点下都会包含分区以及broker的对应信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/zookeeper/bin/zkCli.sh -server test1:2181</span><br><span class="line"></span><br><span class="line">#进入到Zookeeper的命令行终端下面，执行：ls /brokers/topics </span><br></pre></td></tr></table></figure>
+
+<h4 id="生产者负载均衡"><a href="#生产者负载均衡" class="headerlink" title="生产者负载均衡"></a>生产者负载均衡</h4><p>当Broker启动时，会注册该Broker的信息，以及可订阅的topic信息。生产者通过注册在Broker以及Topic上的watcher动态的感知Broker以及Topic的分区情况，从而将Topic的分区动态的分配到broker上.</p>
+<h4 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h4><p>Kafka有消费者分组的概念，每个分组中可以包含多个消费者，每条消息只会发给分组中的一个消费者，且每个分组之间是相互独立互不影响的。</p>
+<h4 id="消费者与分区的对应关系"><a href="#消费者与分区的对应关系" class="headerlink" title="消费者与分区的对应关系"></a>消费者与分区的对应关系</h4><p>对于每个消费者分组，Kafka都会为其分配一个全局唯一的Group ID，分组内的所有消费者会共享该ID， Kafka还会为每个消费者分配一个consumer ID，通常采用<code>hostname:uuid</code>的形式。</p>
+<p>在kafka的设计中规定，对于topic的每个分区，最多只能被一个消费者进行消费，也就是消费者与分区的关系是一对多的关系。消费者与分区的关系也被存储在ZooKeeper中节点的路劲为 <code>/consumers/[group_id]/owners/[topic]/[broker_id-partition_id]</code>，该节点的内容就是消费者的Consumer ID。</p>
+<h4 id="消费者负载均衡"><a href="#消费者负载均衡" class="headerlink" title="消费者负载均衡"></a>消费者负载均衡</h4><p>消费者服务启动时，会创建一个属于消费者节点的临时节点，节点的路径为<code>/consumers/[group_id]/ids/[consumer_id]</code>，该节点的内容是该消费者订阅的Topic信息。每个消费者会对<code>/consumers/[group_id]/ids</code>节点注册Watcher监听器，一旦消费者的数量增加或减少就会触发消费者的负载均衡。消费者还会对<code>/brokers/ids/[brokerid]</code>节点进行监听，如果发现服务器的Broker服务器列表发生变化，也会进行消费者的负载均衡。</p>
+<h4 id="消费者的offset"><a href="#消费者的offset" class="headerlink" title="消费者的offset"></a>消费者的offset</h4><p>在Kafka的消费者API分为两种：</p>
+<p>(1) High Level Api：由ZooKeeper维护消费者的offset</p>
+<p>(2) Low Level Api：自己的代码实现对offset的维护</p>
+<p>由于自己维护offset往往比较复杂，所以多数情况下都是使用High Level的API，offset在ZooKeeper中的节点路径为<code>/consumers/[group_id]/offsets/[topic]/[broker_id-part_id]</code>，该节点的值就是对应的offset。</p>
+<hr>
+<h3 id="Kafka工作流程"><a href="#Kafka工作流程" class="headerlink" title="Kafka工作流程"></a>Kafka工作流程</h3><p>1）生产者定期向主题发送消息。</p>
+<p>2）Kafka broker将所有消息存储在为该特定主题配置的分区中。它确保消息在分区之间平等共享。如果生产者发送两个消息，并且有两个分区，则Kafka将在第一个分区中存储一个消息，在第二个分区中存储第二个消息。</p>
+<p>3）消费者订阅一个特定的主题。</p>
+<p>4）一旦消费者订阅了一个主题，Kafka将向消费者提供该主题的当前偏移量，并将偏移量保存在ZooKeeper中。</p>
+<p>5）消费者将定期请求Kafka新消息。</p>
+<p>6）一旦Kafka收到来自生产者的消息，它会将这些消息转发给消费者。</p>
+<p>7）消费者将收到消息并处理它。</p>
+<p>8）一旦消息被处理，消费者将向Kafka broker发送确认。</p>
+<p>9）一旦Kafka收到确认，它会将偏移量更改为新值，并在ZooKeeper中进行更新。由于ZooKeeper中保留了偏移量，因此即使在服务器出现故障时，消费者也可以正确读取下一条消息。</p>
+<hr>
+<p>更多资料参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d3e963ff8b70">原来这才是kafka</a></p>
+<p><strong>kafka与zookeeper：</strong></p>
+<p>    一个典型的Kafka集群中包含若干Produce，若干broker（一般broker数量越多，集群吞吐率越高），若干Consumer Group，以及一个Zookeeper集群。Kafka通过Zookeeper管理集群配置，选举leader，以及在Consumer Group发生变化时进行rebalance。Producer使用push模式将消息发布到broker，Consumer使用pull模式从broker订阅并消费消息。</p>
+<p><img src="https://img-blog.csdn.net/20171116173621197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbmFua2lhbw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">  </p>
+<p>1)Producer端直接连接broker.list列表,从列表中返回<a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=Topic&tn=24004469_oem_dg&rsv_dl=gh_pl_sl_csd">Topic</a>MetadataResponse,该Metadata包含Topic下每个partition leader建立socket连接并发送消息.</p>
+<p>2)Broker端使用zookeeper用来注册broker信息,以及监控partition leader存活性.</p>
+<p>3)Consumer端使用zookeeper用来注册consumer信息,其中包括consumer消费的partition列表等,同时也用来发现broker列表,并和partition leader建立socket连接,并获取消息。</p>
+<p><strong>Zookeeper作用：</strong>管理broker、consumer</p>
+<p>创建Broker后，向zookeeper注册新的broker信息，实现在<a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=%E6%9C%8D%E5%8A%A1%E5%99%A8&tn=24004469_oem_dg&rsv_dl=gh_pl_sl_csd">服务器</a>正常运行下的水平拓展。具体的，通过注册watcher，获取partition的信息。</p>
+<p>Topic的注册，zookeeper会维护topic与broker的关系，通/brokers/topics/topic.name节点来记录。</p>
+<p>Producer向zookeeper中注册watcher,了解topic的partition的消息，以动态了解运行情况，实现负载均衡。Zookeepr不管理producer，只是能够提供当前broker的相关信息。</p>
+<p>Consumer可以使用group形式消费kafka中的数据。所有的group将以轮询的方式消费broker中的数据，具体的按照启动的顺序。Zookeeper会给每个consumer group一个ID,即同一份数据可以被不同的用户ID多次消费。因此这就是单播与多播的实现。以单个消费者还是以组别的方式去消费数据，由用户自己去定义。Zookeeper管理consumer的offset跟踪当前消费的offset。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://example.com/2021/08/02/ZooKeeper%E4%B8%8EKafka%E4%BB%8B%E7%BB%8D/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/08/02/Java%E6%A1%86%E6%9E%B6%EF%BC%9ADubbo%20%E4%B8%8Espringcloud%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8AEureka%E5%92%8CZooKeeper%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2021-08-02T02:06:32.857Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-02</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2021/08/03/Trace-%E5%88%86%E5%B8%83%E5%BC%8F%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA%EF%BC%8Cdubbo%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6zipkin/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/02/Java%E6%A1%86%E6%9E%B6%EF%BC%9ADubbo%20%E4%B8%8Espringcloud%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8AEureka%E5%92%8CZooKeeper%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Dubbo dubbox与springcloud的区别？</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/08/02/Java%E6%A1%86%E6%9E%B6%EF%BC%9ADubbo%20%E4%B8%8Espringcloud%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8AEureka%E5%92%8CZooKeeper%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F/">Dubbo dubbox与springcloud的区别？</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/29/Java%20Bean%E3%80%81VO%E3%80%81DTO%E3%80%81DO%E3%80%81PO%E5%92%8Cweb%E9%A1%B9%E7%9B%AE%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84/" class="archive-article-date">
-  	<time datetime="2021-07-29T01:57:19.559Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-29</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/29/Java%20Bean%E3%80%81VO%E3%80%81DTO%E3%80%81DO%E3%80%81PO%E5%92%8Cweb%E9%A1%B9%E7%9B%AE%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84/">Java Bean、VO、DTO、DO、PO和web项目三层结构</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/27/Java%208%20Optional%20%E7%B1%BB/" class="archive-article-date">
-  	<time datetime="2021-07-27T05:57:34.643Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-27</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/27/Java%208%20Optional%20%E7%B1%BB/">Java 8 Optional 类</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/26/%E9%98%BF%E9%87%8CJSONObject/" class="archive-article-date">
-  	<time datetime="2021-07-26T02:17:21.383Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/26/%E9%98%BF%E9%87%8CJSONObject/">阿里JSONObject详解</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/23/Mac%E4%B8%8B%E6%9F%A5%E7%9C%8B%E5%92%8C%E7%94%9F%E6%88%90SSH%E5%AF%86%E9%92%A5/" class="archive-article-date">
-  	<time datetime="2021-07-23T10:12:18.814Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/23/Mac%E4%B8%8B%E6%9F%A5%E7%9C%8B%E5%92%8C%E7%94%9F%E6%88%90SSH%E5%AF%86%E9%92%A5/">Mac下查看和生成SSH密钥</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%B9%E8%A8%80%EF%BC%88dialect%EF%BC%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2021-07-23T01:56:49.287Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-23</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%B9%E8%A8%80%EF%BC%88dialect%EF%BC%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F/">数据库方言（dialect）是什么？</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/22/%E4%B8%80%E7%AF%87%E6%95%99%E4%BD%A0%E5%AD%A6%E4%BC%9AJunit5/" class="archive-article-date">
-  	<time datetime="2021-07-22T09:38:27.256Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/22/%E4%B8%80%E7%AF%87%E6%95%99%E4%BD%A0%E5%AD%A6%E4%BC%9AJunit5/">Junit5</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2021/07/22/Java%E6%8E%92%E5%BA%8FComparator%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E5%8F%91%E7%94%9F%E5%BC%82%E5%B8%B8/" class="archive-article-date">
-  	<time datetime="2021-07-22T08:31:41.321Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2021/07/22/Java%E6%8E%92%E5%BA%8FComparator%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E5%8F%91%E7%94%9F%E5%BC%82%E5%B8%B8/">Java排序Comparator实现接口发生异常</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &amp;raquo;</a>
-    </nav>
   
 
 
@@ -448,8 +455,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
