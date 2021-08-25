@@ -8,13 +8,15 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>Linux网络时间同步 | Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="解决rocketmq报错This date have’t data!">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Linux网络时间同步">
 <meta property="og:url" content="http://example.com/2021/08/10/Linux%20%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5ntpdate/index.html">
 <meta property="og:site_name" content="Once More">
+<meta property="og:description" content="解决rocketmq报错This date have’t data!">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-10T02:38:19.197Z">
-<meta property="article:modified_time" content="2021-08-11T15:45:23.376Z">
+<meta property="article:modified_time" content="2021-08-11T16:11:59.933Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
   
@@ -164,16 +166,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
+        <p>解决rocketmq报错This date have’t data!</p>
 <span id="more"></span> 
 <h3 id="1-应用场景"><a href="#1-应用场景" class="headerlink" title="1.应用场景"></a>1.应用场景</h3><p> Linux网络时间同步
  </p>
 <h3 id="2-解决办法"><a href="#2-解决办法" class="headerlink" title="2.解决办法"></a>2.解决办法</h3><p> 2.1安装ntpdate 完成时间同步</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">centos</span><br><span class="line"># yum install ntpdate -y</span><br><span class="line">Ubuntu</span><br><span class="line">apt-get install ntpdate</span><br></pre></td></tr></table></figure>
-
+<pre><code>centos
+# yum install ntpdate -y
+Ubuntu
+apt-get install ntpdate
+</code></pre>
 <p> 2.2手工同步网络时间，执行以下命令，将从time.nist.gov同步时间</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># ntpdate 0.asia.pool.ntp.org</span><br></pre></td></tr></table></figure>
-
+<pre><code># ntpdate 0.asia.pool.ntp.org
+</code></pre>
 <p>若上面的时间服务器不可用，也可以选择以下服务器同步时间</p>
 <p>　　time.nist.gov</p>
 <p>　　time.nuri.net</p>
@@ -182,14 +187,18 @@
 <p>　　2.asia.pool.ntp.org</p>
 <p>　　3.asia.pool.ntp.org</p>
 <p>2.3系统时间同步到硬件，防止系统重启后时间被还原</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># hwclock --systohc</span><br></pre></td></tr></table></figure>
-
+<pre><code># hwclock --systohc
+</code></pre>
 <p>2.4定时执行时间同步任务，crontab -e  命令来添加定时任务</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/10 * * * * /usr/sbin/ntpdate time.nist.gov</span><br></pre></td></tr></table></figure>
-
+<pre><code>*/10 * * * * /usr/sbin/ntpdate time.nist.gov
+</code></pre>
 <p>每隔10分钟一次执行时间同步</p>
 <p>3.1时区同步</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\# timedatectl list-timezones |grep Shanghai    #查找中国时区的完整名称</span><br><span class="line">Asia/Shanghai</span><br><span class="line"># timedatectl set-timezone Asia/Shanghai    #其他时区以此类推</span><br></pre></td></tr></table></figure>
+<pre><code>\# timedatectl list-timezones |grep Shanghai    #查找中国时区的完整名称
+Asia/Shanghai
+# timedatectl set-timezone Asia/Shanghai    #其他时区以此类推
+</code></pre>
+
       
 
       

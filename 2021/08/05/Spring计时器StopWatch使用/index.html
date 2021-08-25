@@ -16,7 +16,7 @@
 <meta property="og:description" content="StopWatch是位于org.springframework.util包下的一个工具类，通过它可方便的对程序部分代码进行计时(ms级别)，适用于同步单线程代码块。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-05T04:06:02.756Z">
-<meta property="article:modified_time" content="2021-08-05T05:02:16.811Z">
+<meta property="article:modified_time" content="2021-08-17T08:40:37.823Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
   
@@ -169,36 +169,234 @@
         <p> StopWatch是位于org.springframework.util包下的一个工具类，通过它可方便的对程序部分代码进行计时(ms级别)，适用于同步单线程代码块。 </p>
 <span id="more"></span> 
 <p> 正常情况下，我们如果需要看某段代码的执行耗时，会通过如下的方式进行查看：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">     StopWatchTest.test0();</span><br><span class="line">//        StopWatchTest.test1();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void test0() throws InterruptedException &#123;</span><br><span class="line">     long start = System.currentTimeMillis();</span><br><span class="line">     // do something</span><br><span class="line">     Thread.sleep(100);</span><br><span class="line">    long end = System.currentTimeMillis();</span><br><span class="line">    long start2 = System.currentTimeMillis();</span><br><span class="line">    // do something</span><br><span class="line">    Thread.sleep(200);</span><br><span class="line">    long end2 = System.currentTimeMillis();</span><br><span class="line">    System.out.println(&quot;某某1执行耗时:&quot; + (end - start));</span><br><span class="line">    System.out.println(&quot;某某2执行耗时:&quot; + (end2 - start2));</span><br><span class="line">&#125; </span><br><span class="line">``````</span><br><span class="line">运行结果：</span><br><span class="line">某某1执行耗时:105</span><br><span class="line">某某2执行耗时:203 </span><br></pre></td></tr></table></figure>
+<pre><code>public static void main(String[] args) throws InterruptedException &#123;
+     StopWatchTest.test0();
+//        StopWatchTest.test1();
+&#125;
 
-<p> 该种方法通过获取执行完成时间与执行开始时间的差值得到程序的执行时间，简单直接有效，但想必写多了也是比较烦人的，尤其是碰到不可描述的代码时，会更加的让人忍不住多写几个bug聊表敬意，而且该结果也不够直观，此时会想是否有一个工具类，提供了这些方法，或者自己写个工具类，刚好可以满足这种场景，并且把结果更加直观的展现出来。<br> 首先我们的需求如下：</p>
-<ol>
-<li> 记录开始时间点</li>
-<li> 记录结束时间点</li>
-<li> 输出执行时间及各个时间段的占比</li>
-</ol>
-<p> 根据该需求，我们可直接使用org.springframework.util包下的一个工具类StopWatch,通过该工具类，我们对上述代码做如下改造：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">//        StopWatchTest.test0();</span><br><span class="line">     StopWatchTest.test1();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void test1() throws InterruptedException &#123;</span><br><span class="line">     StopWatch sw = new StopWatch(&quot;test&quot;);</span><br><span class="line">     sw.start(&quot;task1&quot;);</span><br><span class="line">     // do something</span><br><span class="line">    Thread.sleep(100);</span><br><span class="line">    sw.stop();</span><br><span class="line">    sw.start(&quot;task2&quot;);</span><br><span class="line">    // do something</span><br><span class="line">    Thread.sleep(200);</span><br><span class="line">    sw.stop();</span><br><span class="line">    System.out.println(&quot;sw.prettyPrint()~~~~~~~~~~~~~~~~~&quot;);</span><br><span class="line">    System.out.println(sw.prettyPrint());</span><br><span class="line">&#125; </span><br><span class="line">``````</span><br><span class="line">运行结果：</span><br><span class="line">sw.prettyPrint()~~~~~~~~~~~~~~~~~</span><br><span class="line">StopWatch &#x27;test&#x27;: running time (millis) = 308</span><br><span class="line">-----------------------------------------</span><br><span class="line">ms     %     Task name</span><br><span class="line">-----------------------------------------</span><br><span class="line">00104  034%  task1</span><br><span class="line">00204  066%  task2 </span><br></pre></td></tr></table></figure>
+public static void test0() throws InterruptedException &#123;
+     long start = System.currentTimeMillis();
+     // do something
+     Thread.sleep(100);
+    long end = System.currentTimeMillis();
+    long start2 = System.currentTimeMillis();
+    // do something
+    Thread.sleep(200);
+    long end2 = System.currentTimeMillis();
+    System.out.println(&quot;某某1执行耗时:&quot; + (end - start));
+    System.out.println(&quot;某某2执行耗时:&quot; + (end2 - start2));
+&#125; 
+</code></pre>
+<p>运行结果：<br>某某1执行耗时:105<br>某某2执行耗时:203 </p>
+<pre><code>
+ 该种方法通过获取执行完成时间与执行开始时间的差值得到程序的执行时间，简单直接有效，但想必写多了也是比较烦人的，尤其是碰到不可描述的代码时，会更加的让人忍不住多写几个bug聊表敬意，而且该结果也不够直观，此时会想是否有一个工具类，提供了这些方法，或者自己写个工具类，刚好可以满足这种场景，并且把结果更加直观的展现出来。  
+ 首先我们的需求如下：
 
-<p> start开始记录，stop停止记录，然后通过StopWatch的prettyPrint方法，可直观的输出代码执行耗时，以及执行时间百分比，瞬间感觉比之前的方式高大上了一个档次。<br> 除此之外，还有以下两个方法shortSummary,getTotalTimeMillis，查看程序执行时间。<br>运行代码及结果：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(&quot;sw.shortSummary()~~~~~~~~~~~~~~~~~&quot;);</span><br><span class="line">System.out.println(sw.shortSummary());</span><br><span class="line">System.out.println(&quot;sw.getTotalTimeMillis()~~~~~~~~~~~~~~~~~&quot;);</span><br><span class="line">System.out.println(sw.getTotalTimeMillis());</span><br><span class="line">运行结果</span><br><span class="line">sw.shortSummary()~~~~~~~~~~~~~~~~~</span><br><span class="line">StopWatch &#x27;test&#x27;: running time (millis) = 308</span><br><span class="line">sw.getTotalTimeMillis()~~~~~~~~~~~~~~~~~</span><br><span class="line">308 </span><br></pre></td></tr></table></figure>
+1.  记录开始时间点
+2.  记录结束时间点
+3.  输出执行时间及各个时间段的占比
 
-<p> 其实以上内容在该工具类中实现也极其简单，通过start与stop方法分别记录开始时间与结束时间，其中在记录结束时间时，会维护一个链表类型的tasklist属性，从而使该类可记录多个任务，最后的输出也仅仅是对之前记录的信息做了一个统一的归纳输出，从而使结果更加直观的展示出来。<br> StopWatch优缺点：<br>优点：</p>
-<ol>
-<li> spring自带工具类，可直接使用</li>
-<li> 代码实现简单，使用更简单</li>
-<li>统一归纳，展示每项任务耗时与占用总时间的百分比，展示结果直观<br> 性能消耗相对较小，并且最大程度的保证了start与stop之间的时间记录的准确性</li>
-<li> 可在start时直接指定任务名字，从而更加直观的显示记录结果</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li> 一个StopWatch实例一次只能开启一个task，不能同时start多个task，并且在该task未stop之前不能start一个新的task，必须在该task stop之后才能开启新的task，若要一次开启多个，需要new不同的StopWatch实例</li>
-<li> 代码侵入式使用，需要改动多处代码</li>
-</ol>
-<p>spring中StopWatch源码实现如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br></pre></td><td class="code"><pre><span class="line">import java.text.NumberFormat;</span><br><span class="line">import java.util.LinkedList;</span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">public class StopWatch &#123;</span><br><span class="line">    private final String id;</span><br><span class="line">    private boolean keepTaskList = true;</span><br><span class="line">    private final List&lt;TaskInfo&gt; taskList = new LinkedList();</span><br><span class="line">    private long startTimeMillis;</span><br><span class="line">    private boolean running;</span><br><span class="line">    private String currentTaskName;</span><br><span class="line">    private StopWatch.TaskInfo lastTaskInfo;</span><br><span class="line">    private int taskCount;</span><br><span class="line">    private long totalTimeMillis;</span><br><span class="line"></span><br><span class="line">    public StopWatch() &#123;</span><br><span class="line">        this.id = &quot;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public StopWatch(String id) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setKeepTaskList(boolean keepTaskList) &#123;</span><br><span class="line">        this.keepTaskList = keepTaskList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void start() throws IllegalStateException &#123;</span><br><span class="line">        this.start(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void start(String taskName) throws IllegalStateException &#123;</span><br><span class="line">        if (this.running) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;Can&#x27;t start StopWatch: it&#x27;s already running&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            this.startTimeMillis = System.currentTimeMillis();</span><br><span class="line">            this.running = true;</span><br><span class="line">            this.currentTaskName = taskName;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void stop() throws IllegalStateException &#123;</span><br><span class="line">        if (!this.running) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;Can&#x27;t stop StopWatch: it&#x27;s not running&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            long lastTime = System.currentTimeMillis() - this.startTimeMillis;</span><br><span class="line">            this.totalTimeMillis += lastTime;</span><br><span class="line">            this.lastTaskInfo = new StopWatch.TaskInfo(this.currentTaskName, lastTime);</span><br><span class="line">            if (this.keepTaskList) &#123;</span><br><span class="line">                this.taskList.add(this.lastTaskInfo);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ++this.taskCount;</span><br><span class="line">            this.running = false;</span><br><span class="line">            this.currentTaskName = null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean isRunning() &#123;</span><br><span class="line">        return this.running;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public long getLastTaskTimeMillis() throws IllegalStateException &#123;</span><br><span class="line">        if (this.lastTaskInfo == null) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;No tasks run: can&#x27;t get last task interval&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return this.lastTaskInfo.getTimeMillis();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getLastTaskName() throws IllegalStateException &#123;</span><br><span class="line">        if (this.lastTaskInfo == null) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;No tasks run: can&#x27;t get last task name&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return this.lastTaskInfo.getTaskName();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public StopWatch.TaskInfo getLastTaskInfo() throws IllegalStateException &#123;</span><br><span class="line">        if (this.lastTaskInfo == null) &#123;</span><br><span class="line">            throw new IllegalStateException(&quot;No tasks run: can&#x27;t get last task info&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return this.lastTaskInfo;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public long getTotalTimeMillis() &#123;</span><br><span class="line">        return this.totalTimeMillis;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double getTotalTimeSeconds() &#123;</span><br><span class="line">        return (double) this.totalTimeMillis / 1000.0D;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getTaskCount() &#123;</span><br><span class="line">        return this.taskCount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public StopWatch.TaskInfo[] getTaskInfo() &#123;</span><br><span class="line">        if (!this.keepTaskList) &#123;</span><br><span class="line">            throw new UnsupportedOperationException(&quot;Task info is not being kept!&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return (StopWatch.TaskInfo[]) this.taskList.toArray(new StopWatch.TaskInfo[this.taskList.size()]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String shortSummary() &#123;</span><br><span class="line">        return &quot;StopWatch &#x27;&quot; + this.id + &quot;&#x27;: running time (millis) = &quot; + this.getTotalTimeMillis();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String prettyPrint() &#123;</span><br><span class="line">        StringBuilder sb = new StringBuilder(this.shortSummary());</span><br><span class="line">        sb.append(&#x27;\n&#x27;);</span><br><span class="line">        if (!this.keepTaskList) &#123;</span><br><span class="line">            sb.append(&quot;No task info kept&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            sb.append(&quot;-----------------------------------------\n&quot;);</span><br><span class="line">            sb.append(&quot;ms     %     Task name\n&quot;);</span><br><span class="line">            sb.append(&quot;-----------------------------------------\n&quot;);</span><br><span class="line">            NumberFormat nf = NumberFormat.getNumberInstance();</span><br><span class="line">            nf.setMinimumIntegerDigits(5);</span><br><span class="line">            nf.setGroupingUsed(false);</span><br><span class="line">            NumberFormat pf = NumberFormat.getPercentInstance();</span><br><span class="line">            pf.setMinimumIntegerDigits(3);</span><br><span class="line">            pf.setGroupingUsed(false);</span><br><span class="line">            StopWatch.TaskInfo[] var7;</span><br><span class="line">            int var6 = (var7 = this.getTaskInfo()).length;</span><br><span class="line"></span><br><span class="line">            for (int var5 = 0; var5 &lt; var6; ++var5) &#123;</span><br><span class="line">                StopWatch.TaskInfo task = var7[var5];</span><br><span class="line">                sb.append(nf.format(task.getTimeMillis())).append(&quot;  &quot;);</span><br><span class="line">                sb.append(pf.format(task.getTimeSeconds() / this.getTotalTimeSeconds())).append(&quot;  &quot;);</span><br><span class="line">                sb.append(task.getTaskName()).append(&quot;\n&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        StringBuilder sb = new StringBuilder(this.shortSummary());</span><br><span class="line">        if (this.keepTaskList) &#123;</span><br><span class="line">            StopWatch.TaskInfo[] var5;</span><br><span class="line">            int var4 = (var5 = this.getTaskInfo()).length;</span><br><span class="line"></span><br><span class="line">            for (int var3 = 0; var3 &lt; var4; ++var3) &#123;</span><br><span class="line">                StopWatch.TaskInfo task = var5[var3];</span><br><span class="line">                sb.append(&quot;; [&quot;).append(task.getTaskName()).append(&quot;] took &quot;).append(task.getTimeMillis());</span><br><span class="line">                long percent = Math.round(100.0D * task.getTimeSeconds() / this.getTotalTimeSeconds());</span><br><span class="line">                sb.append(&quot; = &quot;).append(percent).append(&quot;%&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            sb.append(&quot;; no task info kept&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static final class TaskInfo &#123;</span><br><span class="line">        private final String taskName;</span><br><span class="line">        private final long timeMillis;</span><br><span class="line"></span><br><span class="line">        TaskInfo(String taskName, long timeMillis) &#123;</span><br><span class="line">            this.taskName = taskName;</span><br><span class="line">            this.timeMillis = timeMillis;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getTaskName() &#123;</span><br><span class="line">            return this.taskName;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public long getTimeMillis() &#123;</span><br><span class="line">            return this.timeMillis;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public double getTimeSeconds() &#123;</span><br><span class="line">            return (double) this.timeMillis / 1000.0D;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+ 根据该需求，我们可直接使用org.springframework.util包下的一个工具类StopWatch,通过该工具类，我们对上述代码做如下改造：
+</code></pre>
+<p>public static void main(String[] args) throws InterruptedException {<br>//        StopWatchTest.test0();<br>     StopWatchTest.test1();<br>}</p>
+<p>public static void test1() throws InterruptedException {<br>     StopWatch sw = new StopWatch(“test”);<br>     sw.start(“task1”);<br>     // do something<br>    Thread.sleep(100);<br>    sw.stop();<br>    sw.start(“task2”);<br>    // do something<br>    Thread.sleep(200);<br>    sw.stop();<br>    System.out.println(“sw.prettyPrint()~~~~~~~~~~~~~~~~~”);<br>    System.out.println(sw.prettyPrint());<br>} </p>
+<p>``````<br>运行结果：<br>sw.prettyPrint()~~~~~~~~~~~~~~~~~<br>StopWatch ‘test’: running time (millis) = 308</p>
+<hr>
+<h2 id="ms-Task-name"><a href="#ms-Task-name" class="headerlink" title="ms     %     Task name"></a>ms     %     Task name</h2><p>00104  034%  task1<br>00204  066%  task2 </p>
+<pre><code>
+ start开始记录，stop停止记录，然后通过StopWatch的prettyPrint方法，可直观的输出代码执行耗时，以及执行时间百分比，瞬间感觉比之前的方式高大上了一个档次。  
+ 除此之外，还有以下两个方法shortSummary,getTotalTimeMillis，查看程序执行时间。  
+运行代码及结果：
+</code></pre>
+<p>System.out.println(“sw.shortSummary()~~~~~~~~~~~~~~~~~”);<br>System.out.println(sw.shortSummary());<br>System.out.println(“sw.getTotalTimeMillis()~~~~~~~~~~~~~~~~~”);<br>System.out.println(sw.getTotalTimeMillis());<br>运行结果<br>sw.shortSummary()~~~~~~~~~~~~~~~~~<br>StopWatch ‘test’: running time (millis) = 308<br>sw.getTotalTimeMillis()~~~~~~~~~~~~~~~~~<br>308 </p>
+<pre><code>
+ 其实以上内容在该工具类中实现也极其简单，通过start与stop方法分别记录开始时间与结束时间，其中在记录结束时间时，会维护一个链表类型的tasklist属性，从而使该类可记录多个任务，最后的输出也仅仅是对之前记录的信息做了一个统一的归纳输出，从而使结果更加直观的展示出来。  
+ StopWatch优缺点：  
+优点：
 
+1.  spring自带工具类，可直接使用
+2.  代码实现简单，使用更简单
+3.  统一归纳，展示每项任务耗时与占用总时间的百分比，展示结果直观  
+    性能消耗相对较小，并且最大程度的保证了start与stop之间的时间记录的准确性
+4.  可在start时直接指定任务名字，从而更加直观的显示记录结果
 
+缺点：
+
+1.  一个StopWatch实例一次只能开启一个task，不能同时start多个task，并且在该task未stop之前不能start一个新的task，必须在该task stop之后才能开启新的task，若要一次开启多个，需要new不同的StopWatch实例
+2.  代码侵入式使用，需要改动多处代码
+
+spring中StopWatch源码实现如下：
+</code></pre>
+<p>import java.text.NumberFormat;<br>import java.util.LinkedList;<br>import java.util.List;</p>
+<p>public class StopWatch {<br>    private final String id;<br>    private boolean keepTaskList = true;<br>    private final List<TaskInfo> taskList = new LinkedList();<br>    private long startTimeMillis;<br>    private boolean running;<br>    private String currentTaskName;<br>    private StopWatch.TaskInfo lastTaskInfo;<br>    private int taskCount;<br>    private long totalTimeMillis;</p>
+<pre><code>public StopWatch() &#123;
+    this.id = &quot;&quot;;
+&#125;
+
+public StopWatch(String id) &#123;
+    this.id = id;
+&#125;
+
+public void setKeepTaskList(boolean keepTaskList) &#123;
+    this.keepTaskList = keepTaskList;
+&#125;
+
+public void start() throws IllegalStateException &#123;
+    this.start(&quot;&quot;);
+&#125;
+
+public void start(String taskName) throws IllegalStateException &#123;
+    if (this.running) &#123;
+        throw new IllegalStateException(&quot;Can&#39;t start StopWatch: it&#39;s already running&quot;);
+    &#125; else &#123;
+        this.startTimeMillis = System.currentTimeMillis();
+        this.running = true;
+        this.currentTaskName = taskName;
+    &#125;
+&#125;
+
+public void stop() throws IllegalStateException &#123;
+    if (!this.running) &#123;
+        throw new IllegalStateException(&quot;Can&#39;t stop StopWatch: it&#39;s not running&quot;);
+    &#125; else &#123;
+        long lastTime = System.currentTimeMillis() - this.startTimeMillis;
+        this.totalTimeMillis += lastTime;
+        this.lastTaskInfo = new StopWatch.TaskInfo(this.currentTaskName, lastTime);
+        if (this.keepTaskList) &#123;
+            this.taskList.add(this.lastTaskInfo);
+        &#125;
+
+        ++this.taskCount;
+        this.running = false;
+        this.currentTaskName = null;
+    &#125;
+&#125;
+
+public boolean isRunning() &#123;
+    return this.running;
+&#125;
+
+public long getLastTaskTimeMillis() throws IllegalStateException &#123;
+    if (this.lastTaskInfo == null) &#123;
+        throw new IllegalStateException(&quot;No tasks run: can&#39;t get last task interval&quot;);
+    &#125; else &#123;
+        return this.lastTaskInfo.getTimeMillis();
+    &#125;
+&#125;
+
+public String getLastTaskName() throws IllegalStateException &#123;
+    if (this.lastTaskInfo == null) &#123;
+        throw new IllegalStateException(&quot;No tasks run: can&#39;t get last task name&quot;);
+    &#125; else &#123;
+        return this.lastTaskInfo.getTaskName();
+    &#125;
+&#125;
+
+public StopWatch.TaskInfo getLastTaskInfo() throws IllegalStateException &#123;
+    if (this.lastTaskInfo == null) &#123;
+        throw new IllegalStateException(&quot;No tasks run: can&#39;t get last task info&quot;);
+    &#125; else &#123;
+        return this.lastTaskInfo;
+    &#125;
+&#125;
+
+public long getTotalTimeMillis() &#123;
+    return this.totalTimeMillis;
+&#125;
+
+public double getTotalTimeSeconds() &#123;
+    return (double) this.totalTimeMillis / 1000.0D;
+&#125;
+
+public int getTaskCount() &#123;
+    return this.taskCount;
+&#125;
+
+public StopWatch.TaskInfo[] getTaskInfo() &#123;
+    if (!this.keepTaskList) &#123;
+        throw new UnsupportedOperationException(&quot;Task info is not being kept!&quot;);
+    &#125; else &#123;
+        return (StopWatch.TaskInfo[]) this.taskList.toArray(new StopWatch.TaskInfo[this.taskList.size()]);
+    &#125;
+&#125;
+
+public String shortSummary() &#123;
+    return &quot;StopWatch &#39;&quot; + this.id + &quot;&#39;: running time (millis) = &quot; + this.getTotalTimeMillis();
+&#125;
+
+public String prettyPrint() &#123;
+    StringBuilder sb = new StringBuilder(this.shortSummary());
+    sb.append(&#39;\n&#39;);
+    if (!this.keepTaskList) &#123;
+        sb.append(&quot;No task info kept&quot;);
+    &#125; else &#123;
+        sb.append(&quot;-----------------------------------------\n&quot;);
+        sb.append(&quot;ms     %     Task name\n&quot;);
+        sb.append(&quot;-----------------------------------------\n&quot;);
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMinimumIntegerDigits(5);
+        nf.setGroupingUsed(false);
+        NumberFormat pf = NumberFormat.getPercentInstance();
+        pf.setMinimumIntegerDigits(3);
+        pf.setGroupingUsed(false);
+        StopWatch.TaskInfo[] var7;
+        int var6 = (var7 = this.getTaskInfo()).length;
+
+        for (int var5 = 0; var5 &lt; var6; ++var5) &#123;
+            StopWatch.TaskInfo task = var7[var5];
+            sb.append(nf.format(task.getTimeMillis())).append(&quot;  &quot;);
+            sb.append(pf.format(task.getTimeSeconds() / this.getTotalTimeSeconds())).append(&quot;  &quot;);
+            sb.append(task.getTaskName()).append(&quot;\n&quot;);
+        &#125;
+    &#125;
+
+    return sb.toString();
+&#125;
+
+@Override
+public String toString() &#123;
+    StringBuilder sb = new StringBuilder(this.shortSummary());
+    if (this.keepTaskList) &#123;
+        StopWatch.TaskInfo[] var5;
+        int var4 = (var5 = this.getTaskInfo()).length;
+
+        for (int var3 = 0; var3 &lt; var4; ++var3) &#123;
+            StopWatch.TaskInfo task = var5[var3];
+            sb.append(&quot;; [&quot;).append(task.getTaskName()).append(&quot;] took &quot;).append(task.getTimeMillis());
+            long percent = Math.round(100.0D * task.getTimeSeconds() / this.getTotalTimeSeconds());
+            sb.append(&quot; = &quot;).append(percent).append(&quot;%&quot;);
+        &#125;
+    &#125; else &#123;
+        sb.append(&quot;; no task info kept&quot;);
+    &#125;
+
+    return sb.toString();
+&#125;
+
+public static final class TaskInfo &#123;
+    private final String taskName;
+    private final long timeMillis;
+
+    TaskInfo(String taskName, long timeMillis) &#123;
+        this.taskName = taskName;
+        this.timeMillis = timeMillis;
+    &#125;
+
+    public String getTaskName() &#123;
+        return this.taskName;
+    &#125;
+
+    public long getTimeMillis() &#123;
+        return this.timeMillis;
+    &#125;
+
+    public double getTimeSeconds() &#123;
+        return (double) this.timeMillis / 1000.0D;
+    &#125;
+&#125;
+</code></pre>
+<p>} </p>
+<p>```</p>
 <p>原文链接：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/gxs1688/article/details/87185030">https://blog.csdn.net/gxs1688/article/details/87185030</a></p>
 

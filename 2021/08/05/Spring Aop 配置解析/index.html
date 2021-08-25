@@ -169,17 +169,91 @@
 
 <p>假设我们现在的需求是在操作数据库的代码前后加上事务处理。</p>
 <p>首先编写目标对象类</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class UserServiceImpl implements UserService &#123;</span><br><span class="line">	@Override</span><br><span class="line">	public void save() &#123;</span><br><span class="line">		System.out.println(&quot;保存用户!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void delete() &#123;</span><br><span class="line">		System.out.println(&quot;删除用户!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void update() &#123;</span><br><span class="line">		System.out.println(&quot;更新用户!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	@Override</span><br><span class="line">	public void find() &#123;</span><br><span class="line">		System.out.println(&quot;查找用户!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code>public class UserServiceImpl implements UserService &#123;
+    @Override
+    public void save() &#123;
+        System.out.println(&quot;保存用户!&quot;);
+    &#125;
+    @Override
+    public void delete() &#123;
+        System.out.println(&quot;删除用户!&quot;);
+    &#125;
+    @Override
+    public void update() &#123;
+        System.out.println(&quot;更新用户!&quot;);
+    &#125;
+    @Override
+    public void find() &#123;
+        System.out.println(&quot;查找用户!&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>编写通知类</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class MyAdvice &#123;</span><br><span class="line"></span><br><span class="line">	//前置通知</span><br><span class="line">	public void before()&#123;</span><br><span class="line">		System.out.println(&quot;这是前置通知!!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	//后置通知</span><br><span class="line">	public void afterReturning()&#123;</span><br><span class="line">		System.out.println(&quot;这是后置通知(如果出现异常不会调用)!!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	//环绕通知</span><br><span class="line">	public Object around(ProceedingJoinPoint pjp) throws Throwable &#123;</span><br><span class="line">		System.out.println(&quot;这是环绕通知之前的部分!!&quot;);</span><br><span class="line">		Object proceed = pjp.proceed();//调用目标方法</span><br><span class="line">		System.out.println(&quot;这是环绕通知之后的部分!!&quot;);</span><br><span class="line">		return proceed;</span><br><span class="line">	&#125;</span><br><span class="line">	//异常通知</span><br><span class="line">	public void afterException()&#123;</span><br><span class="line">		System.out.println(&quot;出事啦!出现异常了!!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	//后置通知</span><br><span class="line">	public void after()&#123;</span><br><span class="line">		System.out.println(&quot;这是后置通知(出现异常也会调用)!!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>public class MyAdvice &#123;
 
+    //前置通知
+    public void before()&#123;
+        System.out.println(&quot;这是前置通知!!&quot;);
+    &#125;
+    //后置通知
+    public void afterReturning()&#123;
+        System.out.println(&quot;这是后置通知(如果出现异常不会调用)!!&quot;);
+    &#125;
+    //环绕通知
+    public Object around(ProceedingJoinPoint pjp) throws Throwable &#123;
+        System.out.println(&quot;这是环绕通知之前的部分!!&quot;);
+        Object proceed = pjp.proceed();//调用目标方法
+        System.out.println(&quot;这是环绕通知之后的部分!!&quot;);
+        return proceed;
+    &#125;
+    //异常通知
+    public void afterException()&#123;
+        System.out.println(&quot;出事啦!出现异常了!!&quot;);
+    &#125;
+    //后置通知
+    public void after()&#123;
+        System.out.println(&quot;这是后置通知(出现异常也会调用)!!&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>配置文件applicationContext.xml</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://www.springframework.org/schema/beans&quot; xmlns:context=&quot;http://www.springframework.org/schema/context&quot; xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot; xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd &quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 准备工作: 导入aop(约束)命名空间 --&gt;</span><br><span class="line">&lt;!-- 1.配置目标对象 --&gt;</span><br><span class="line">	&lt;bean name=&quot;userService&quot; class=&quot;test.service.UserServiceImpl&quot; &gt;&lt;/bean&gt;</span><br><span class="line">&lt;!-- 2.配置通知对象 --&gt;</span><br><span class="line">	&lt;bean name=&quot;myAdvice&quot; class=&quot;test_springaop.MyAdvice&quot; &gt;&lt;/bean&gt;</span><br><span class="line">&lt;!-- 3.配置将通知织入目标对象 --&gt;</span><br><span class="line">	&lt;aop:config&gt;</span><br><span class="line">		&lt;!-- 配置切入点 --&gt;</span><br><span class="line">		&lt;aop:pointcut expression=&quot;execution(* test.service.*ServiceImpl.*(..))&quot; id=&quot;pc&quot;/&gt;</span><br><span class="line">		&lt;aop:aspect ref=&quot;myAdvice&quot; &gt;</span><br><span class="line">			&lt;!-- 指定名为before方法作为前置通知 --&gt;</span><br><span class="line">			&lt;aop:before method=&quot;before&quot; pointcut-ref=&quot;pc&quot; /&gt;</span><br><span class="line">			&lt;!-- 后置 --&gt;</span><br><span class="line">			&lt;aop:after-returning method=&quot;afterReturning&quot; pointcut-ref=&quot;pc&quot; /&gt;</span><br><span class="line">			&lt;!-- 环绕通知 --&gt;</span><br><span class="line">			&lt;aop:around method=&quot;around&quot; pointcut-ref=&quot;pc&quot; /&gt;</span><br><span class="line">			&lt;!-- 异常拦截通知 --&gt;</span><br><span class="line">			&lt;aop:after-throwing method=&quot;afterException&quot; pointcut-ref=&quot;pc&quot;/&gt;</span><br><span class="line">			&lt;!-- 后置 --&gt;</span><br><span class="line">			&lt;aop:after method=&quot;after&quot; pointcut-ref=&quot;pc&quot;/&gt;</span><br><span class="line">		&lt;/aop:aspect&gt;</span><br><span class="line">	&lt;/aop:config&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns=&quot;http://www.springframework.org/schema/beans&quot; xmlns:context=&quot;http://www.springframework.org/schema/context&quot; xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot; xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd &quot;&gt;
 
+&lt;!-- 准备工作: 导入aop(约束)命名空间 --&gt;
+&lt;!-- 1.配置目标对象 --&gt;
+    &lt;bean name=&quot;userService&quot; class=&quot;test.service.UserServiceImpl&quot; &gt;&lt;/bean&gt;
+&lt;!-- 2.配置通知对象 --&gt;
+    &lt;bean name=&quot;myAdvice&quot; class=&quot;test_springaop.MyAdvice&quot; &gt;&lt;/bean&gt;
+&lt;!-- 3.配置将通知织入目标对象 --&gt;
+    &lt;aop:config&gt;
+        &lt;!-- 配置切入点 --&gt;
+        &lt;aop:pointcut expression=&quot;execution(* test.service.*ServiceImpl.*(..))&quot; id=&quot;pc&quot;/&gt;
+        &lt;aop:aspect ref=&quot;myAdvice&quot; &gt;
+            &lt;!-- 指定名为before方法作为前置通知 --&gt;
+            &lt;aop:before method=&quot;before&quot; pointcut-ref=&quot;pc&quot; /&gt;
+            &lt;!-- 后置 --&gt;
+            &lt;aop:after-returning method=&quot;afterReturning&quot; pointcut-ref=&quot;pc&quot; /&gt;
+            &lt;!-- 环绕通知 --&gt;
+            &lt;aop:around method=&quot;around&quot; pointcut-ref=&quot;pc&quot; /&gt;
+            &lt;!-- 异常拦截通知 --&gt;
+            &lt;aop:after-throwing method=&quot;afterException&quot; pointcut-ref=&quot;pc&quot;/&gt;
+            &lt;!-- 后置 --&gt;
+            &lt;aop:after method=&quot;after&quot; pointcut-ref=&quot;pc&quot;/&gt;
+        &lt;/aop:aspect&gt;
+    &lt;/aop:config&gt;
+&lt;/beans&gt;
+</code></pre>
 <p>开始配置</p>
 <p>首先要导入SpringAOP的命名空间，然后把目标对象和通知类配置到配置文件中，然后配置将通知织入到目标对象。在<config>的标签下进行配置，先配置切入点<pointcut>,切入点是你想要增强和已经增强的方法，id属性指定这个切点的一个名称，expression属性必须用表达式来写，格式为execution(完整方法名)，如(public void test.service.UserServiceImpl.save()),表示一个公用的返回值为void的方法save()作为想要增强的方法，public可以不写，因为这是个默认值，而且增强private方法意义不太大。在表达式中，如果我们想一次对多个方法进行增强，可以用*代替一些文字，达到通配的效果，例如</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;aop:config&gt; &lt;aop:pointcutid=&quot;serviceMethod&quot; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">expression=&quot;execution(* *..*Service.*(..))&quot; /&gt; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;aop:a......</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;aop:config&gt; &lt;aop:pointcutid=&quot;serviceMethod&quot; 
+
+
+expression=&quot;execution(* *..*Service.*(..))&quot; /&gt; 
+
+
+&lt;aop:a......
+</code></pre>
 <p>第一个* 表示任意返回值类型<br>第二个* 表示以任意名字开头的package. 如 com.xx.<br>第三个* 表示以任意名字开头的class的类名 如TestService<br>第四个* 表示 通配 *service下的任意class<br>最后二个.. 表示通配 方法可以有0个或多个参数</p>
 <p>     void test.service.UserServiceImpl.save()：去掉public</p>
 <p>    * test.service.UserServiceImpl.save()：返回值任意</p>
@@ -295,7 +369,7 @@
   
   
     <a href="/2021/08/05/Maven%E4%BD%BF%E7%94%A8%E4%B9%8Bpacking/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Maven使用之packing</div>
+      <div class="article-nav-title">Maven使用之exclusions标签和packing</div>
       <i class="icon-circle-right"></i>
     </a>
   

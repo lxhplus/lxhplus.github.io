@@ -308,9 +308,47 @@
 <p><strong>注意：</strong> 这些方法是从 <strong>java.lang.Object</strong> 类继承来的。</p>
 <hr>
 <h2 id="Optional-实例"><a href="#Optional-实例" class="headerlink" title="Optional 实例"></a>Optional 实例</h2><p>我们可以通过以下实例来更好的了解 Optional 类的使用：</p>
-<h2 id="Java8Tester-java-文件"><a href="#Java8Tester-java-文件" class="headerlink" title="Java8Tester.java 文件"></a>Java8Tester.java 文件</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">import java.util.Optional;</span><br><span class="line"> </span><br><span class="line">public class Java8Tester &#123;</span><br><span class="line">   public static void main(String args[])&#123;</span><br><span class="line">   </span><br><span class="line">      Java8Tester java8Tester = new Java8Tester();</span><br><span class="line">      Integer value1 = null;</span><br><span class="line">      Integer value2 = new Integer(10);</span><br><span class="line">        </span><br><span class="line">      // Optional.ofNullable - 允许传递为 null 参数</span><br><span class="line">      Optional&lt;Integer&gt; a = Optional.ofNullable(value1);</span><br><span class="line">        </span><br><span class="line">      // Optional.of - 如果传递的参数是 null，抛出异常 NullPointerException</span><br><span class="line">      Optional&lt;Integer&gt; b = Optional.of(value2);</span><br><span class="line">      System.out.println(java8Tester.sum(a,b));</span><br><span class="line">   &#125;</span><br><span class="line">    </span><br><span class="line">   public Integer sum(Optional&lt;Integer&gt; a, Optional&lt;Integer&gt; b)&#123;</span><br><span class="line">    </span><br><span class="line">      // Optional.isPresent - 判断值是否存在</span><br><span class="line">        </span><br><span class="line">      System.out.println(&quot;第一个参数值存在: &quot; + a.isPresent());</span><br><span class="line">      System.out.println(&quot;第二个参数值存在: &quot; + b.isPresent());</span><br><span class="line">        </span><br><span class="line">      // Optional.orElse - 如果值存在，返回它，否则返回默认值</span><br><span class="line">      Integer value1 = a.orElse(new Integer(0));</span><br><span class="line">        </span><br><span class="line">      //Optional.get - 获取值，值需要存在</span><br><span class="line">      Integer value2 = b.get();</span><br><span class="line">      return value1 + value2;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Java8Tester-java-文件"><a href="#Java8Tester-java-文件" class="headerlink" title="Java8Tester.java 文件"></a>Java8Tester.java 文件</h2><pre><code>import java.util.Optional;
+ 
+public class Java8Tester &#123;
+   public static void main(String args[])&#123;
+   
+      Java8Tester java8Tester = new Java8Tester();
+      Integer value1 = null;
+      Integer value2 = new Integer(10);
+        
+      // Optional.ofNullable - 允许传递为 null 参数
+      Optional&lt;Integer&gt; a = Optional.ofNullable(value1);
+        
+      // Optional.of - 如果传递的参数是 null，抛出异常 NullPointerException
+      Optional&lt;Integer&gt; b = Optional.of(value2);
+      System.out.println(java8Tester.sum(a,b));
+   &#125;
+    
+   public Integer sum(Optional&lt;Integer&gt; a, Optional&lt;Integer&gt; b)&#123;
+    
+      // Optional.isPresent - 判断值是否存在
+        
+      System.out.println(&quot;第一个参数值存在: &quot; + a.isPresent());
+      System.out.println(&quot;第二个参数值存在: &quot; + b.isPresent());
+        
+      // Optional.orElse - 如果值存在，返回它，否则返回默认值
+      Integer value1 = a.orElse(new Integer(0));
+        
+      //Optional.get - 获取值，值需要存在
+      Integer value2 = b.get();
+      return value1 + value2;
+   &#125;
+&#125;
+</code></pre>
 <p>执行以上脚本，输出结果为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ javac Java8Tester.java </span><br><span class="line">$ java Java8Tester</span><br><span class="line">第一个参数值存在: false</span><br><span class="line">第二个参数值存在: true</span><br><span class="line">10</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>$ javac Java8Tester.java 
+$ java Java8Tester
+第一个参数值存在: false
+第二个参数值存在: true
+10
+</code></pre>
+
       
 
       

@@ -185,24 +185,100 @@
 <p>代码重构往往是牵一发而动全身的。当修改底层数据结构时，上层服务经常会受到影响。有时候只是简单地修改一个字段名称，就会引起一系列错误。但是在有单元测试保障的前提下，重构代码时我们会很自然地多一分勇气，看到单元测试100%执行通过的刹那充满自信和成就感。</p>
 <h2 id="1-4-单元测试的基本原则"><a href="#1-4-单元测试的基本原则" class="headerlink" title="1.4 单元测试的基本原则"></a>1.4 单元测试的基本原则</h2><p>宏观上,单元测试要符合AIR原则；微观上,单元测试的代码层面要符合BCDE原则。AIR 即空气 单元测试亦是如此。当业务代码在线上运行时可能感觉不到测试用例的存在和价值，但在代码质量的保障上，却是非常关键的。新增代码应该同步增加测试用例，修改代码逻辑时也应该同步保证测试用例成功执行。AIR具体包括： - A : Automatic （自动化） - I : Independent （独立性） - R : Repeatable （可重复）</p>
 <p>单元测试应该是全自动执行的。测试用例通常会被频繁地触发执行，执行过程必须完全自动化才有意义。如果单元测试的输出结果需要人工介入检查，那么它一定是不合格的。单元测试中不允许使用 System.out 来进行人工验证，而必须使用断言来验证。 为了保证单元测试稳定可靠且便于维护，需要保证其独立性。用例之间不允许互相调用，也不允许出现执行次序的先后依赖。如下警示代码所示testMethod2 需要调用 testMethod1。在执行相调用，也不允许出现执行次序的先后依赖。如下警示代码所示testMethod2 时会重复执行验证testMethod1 ，导致运行效率降低。更严重的是,testMethod1 的验证失败会影响 testMethod2的执行。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testMethodl() &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line">@Test</span><br><span class="line">public void testMethod2() &#123;</span><br><span class="line">  testMethodl ();</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code>@Test
+public void testMethodl() &#123;
+  ...
+&#125;
+@Test
+public void testMethod2() &#123;
+  testMethodl ();
+...
+&#125;
+</code></pre>
 <p>编写单元测试时要保证测试粒度足够小,这样有助于精确定位问题，单元测试用例默认是方法级别的。单测不负责检查跨类或者跨系统的交互逻辑，那是集成测试需要覆盖的范围。编写单元测试用例时，为了保证被测模块的交付质量，需要符合BCDE原则。 - B: Border 边界值测试，包括循环边界、特殊取值、特殊时间点、数据顺序等。 - C: Correct 正确的输入,并得到预期的结果。 - D: Design 与设计文档相结合，来编写单元测试。 - E : Error 单元测试的目标是证明程序有错，而不是程序无错。为了发现代码中潜在的错误,我们需要在编写测试用例时有一些强制的错误输入（如非法数据、异常流程、非业务允许输入等）来得到预期的错误结果。</p>
 <h2 id="1-5-单元测试的覆盖率"><a href="#1-5-单元测试的覆盖率" class="headerlink" title="1.5 单元测试的覆盖率"></a>1.5 单元测试的覆盖率</h2><p>单元测试是一种白盒测试 测试者依据程序的内部结构来实现测试代码。单测覆盖率是指业务代码被单测测试的比例和程度，它是衡量单元测试好坏的一个很重要的指标，各类覆盖率指标从粗到细、从弱到强排列如下。 1. <strong>粗粒度的覆盖率</strong> 粗粒度的覆盖包括类覆盖和方法覆盖两种。类覆盖是指类中只要有方法或变量被测试用例调用或执行到，那么就说这个类被测试覆盖了。方法覆盖同理 只要在测试用例执行过程中，某个方法被调用了，则无论执行了该方法中的多少行代码，都可以认为该方法被覆盖了。从实际测试场景来看，无论是以类覆盖率还是方法覆盖率来衡量测试覆盖范围，其粒度都太粗了。 2. <strong>细粒度的覆盖</strong> 细粒度的覆盖包括以下几种。 - 行覆盖（Line Coverage) 行覆盖也称为语句覆盖，用来度量可执行的语旬是否被执行到。行覆盖率的计算公式的分子是执行到的语句行数，分母是总的可执行语句行数。示例代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package com.daming.junit_test;</span><br><span class="line"></span><br><span class="line">public class CoverageSampleMethods &#123;</span><br><span class="line">    public Boolean testMethod(int a, int b, int c) &#123;</span><br><span class="line"></span><br><span class="line">        boolean result = false;</span><br><span class="line">        if (a == 1 &amp;&amp; b == 2 || c == 3) &#123;</span><br><span class="line">            result = true;</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>package com.daming.junit_test;
 
+public class CoverageSampleMethods &#123;
+    public Boolean testMethod(int a, int b, int c) &#123;
+
+        boolean result = false;
+        if (a == 1 &amp;&amp; b == 2 || c == 3) &#123;
+            result = true;
+        &#125;
+        return result;
+    &#125;
+&#125;
+</code></pre>
 <p>以上方法中有5行可执行语句和3个入参，针对此方法编写测试用例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">@DisplayName(&quot;line coverage sample test&quot;)</span><br><span class="line">void testCoverageSample() &#123;</span><br><span class="line"></span><br><span class="line">    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">    Assertions.assertTrue(coverageSampleMethods.testMethod(1, 2, 0));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@Test
+@DisplayName(&quot;line coverage sample test&quot;)
+void testCoverageSample() &#123;
 
+    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+    Assertions.assertTrue(coverageSampleMethods.testMethod(1, 2, 0));
+&#125;
+</code></pre>
 <p>以上测试用例的行覆盖率是 100% ，但是在执行过程中 c==3 的条件判断根本没有被执行到，a!=1并且c!=3 的情况难道不应该测试一下吗？由此可见，行覆盖的覆盖强度并不高，但由于容易计算，因此在主流的覆盖率工具中，它依然是一个十分常见的参考指标。 - 分支覆盖(Branch Coverage) 分支覆盖也称为判定覆盖，用来度量程序中每一个判定分支是否都被执行到。分支覆盖率的计算公式中的分子是代码中被执行到的分支数，分母是代码中所有分支的总数。譬如前面例子中，（a== 1 &amp;&amp; b == 2 || c = 3)整个条件为一个判定,测试数据应至少保证此判定为真和为假的情况都被覆盖到。分支覆盖容易与下面要说的条件判定覆盖混淆，因此我们先介绍条件判定覆盖的定义，然后再对比介绍两者的区别。 - 条件判定覆盖（ Condition Decision Coverage ) 条件判定覆盖要求设计足够的测试用例，能够让判定中每个条件的所有可能情况至少被执行一次，同时每个判定本身的所有可能结果也至少执行一次。例如（a== 1 &amp;&amp; b == 2 ||c=3) 这个判定中包含了3种条件，即a== 1 、 b == 2 、c=3。为了便于理解 ，下面我们仍使用行覆盖率中的 testMethod 方法作为被测方法，测试用例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@ParameterizedTest</span><br><span class="line">@DisplayName(&quot;Condition Decision coverage sample test result true&quot;)</span><br><span class="line">@CsvSource(&#123; &quot;0,2,3&quot;, &quot;1,0,3&quot; &#125;)</span><br><span class="line">void testConditionDecisionCoverageTrue(int a, int b, int c) &#123;</span><br><span class="line"></span><br><span class="line">    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">    Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Test</span><br><span class="line">@DisplayName(&quot;Condition Decisior coverage sample test result false&quot;)</span><br><span class="line">void testConditionDecisionCoverageFalse() &#123;</span><br><span class="line"></span><br><span class="line">    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">    Assertions.assertTrue(coverageSampleMethods.testMethod(0, 0, 0));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@ParameterizedTest
+@DisplayName(&quot;Condition Decision coverage sample test result true&quot;)
+@CsvSource(&#123; &quot;0,2,3&quot;, &quot;1,0,3&quot; &#125;)
+void testConditionDecisionCoverageTrue(int a, int b, int c) &#123;
 
+    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+    Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));
+&#125;
+
+@Test
+@DisplayName(&quot;Condition Decisior coverage sample test result false&quot;)
+void testConditionDecisionCoverageFalse() &#123;
+
+    CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+    Assertions.assertTrue(coverageSampleMethods.testMethod(0, 0, 0));
+&#125;
+</code></pre>
 <p>通过＠ParameterizedTest 我们可以定义一个参数化测试，＠CsvSource 注解使得我们可以通过定义一个 String 数组来定义多次运行测试时的参数列表，而每一个String 值通过逗号分隔后的结果，就是每一次测试运行时的实际参数值。我们通过两个测试用例分别测试判定结果为 true和false 这两种情况。第一个测试用例 testConditionDecisionCoverageTrue 会运行两次， a、b、c这三个参数的值分别为0、2、3和1、0、3;第二个测试用例 testConditionDecisionCoverageFalse 3个参数的值都为0。在被测方法testMethod中，有个判定（a== 1 &amp;&amp; b == 2 || c == 3）包含了三个条件(a == 1、b == 2、c==3），判定的结果显而易见有两种（true、 false ）， 我们已经都覆盖到了。另外，我们设计的测试用例，也使得上述三个条件真和假的结果都取到了。因此，这个测试用例满足了条件判定覆盖。条件覆盖不是将判定中的每个条件表达式的结果进行排列组合，而是只要每个条件表达式的结果true和false测试到了就OK了。因此，我们可以这样推论：完全的条件覆盖并不能保证完全的判定覆盖。 - 条件组合覆盖（ Multiple Condition Coverage) 条件组合覆盖是指判定中所有条件的各种组合情况都出现至少一次。还是以 (a == 1 &amp;&amp; b == 2 || c == 3）这个判定为例，我们在介绍条件判定覆盖时，忽略了如a==1、b ==2、c == 3等诸多情况。针对被测方法 testMethod ，满足条件组合覆盖的一个测试用例如下:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@ParameterizedTest</span><br><span class="line">    @DisplayName(&quot;Mult ple Condition Coverage sample test result true&quot;)</span><br><span class="line">    @CsvSource(&#123; &quot;1,2,3&quot;, &quot;1,2,0&quot;, &quot;1,0,3&quot;, &quot;0,2,3&quot;, &quot;0,0,3&quot; &#125;)</span><br><span class="line">    void testMultipleConditionCoverageSampleTrue(int a, int b, int c) &#123;</span><br><span class="line"></span><br><span class="line">        CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">        Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @ParameterizedTest</span><br><span class="line">    @DisplayName( &quot;Multiple Condit on Coverage sample test result false &quot; )</span><br><span class="line">    @CsvSource(&#123;</span><br><span class="line">            &quot;1,0,0&quot;,</span><br><span class="line">            &quot;0,0,0&quot;,</span><br><span class="line">            &quot;0,2,0&quot;</span><br><span class="line">    &#125;)</span><br><span class="line">    void testMultipleConditionCoverageSampleFalse(int a , int b , int c) &#123;</span><br><span class="line">        CoverageSampleMethods coverageSampleMethods</span><br><span class="line">                = new CoverageSampleMethods();</span><br><span class="line">        Assertions.assertFalse(coverageSampleMethods. testMethod(a , b , c));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@ParameterizedTest
+    @DisplayName(&quot;Mult ple Condition Coverage sample test result true&quot;)
+    @CsvSource(&#123; &quot;1,2,3&quot;, &quot;1,2,0&quot;, &quot;1,0,3&quot;, &quot;0,2,3&quot;, &quot;0,0,3&quot; &#125;)
+    void testMultipleConditionCoverageSampleTrue(int a, int b, int c) &#123;
 
+        CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+        Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));
+    &#125;
+
+    @ParameterizedTest
+    @DisplayName( &quot;Multiple Condit on Coverage sample test result false &quot; )
+    @CsvSource(&#123;
+            &quot;1,0,0&quot;,
+            &quot;0,0,0&quot;,
+            &quot;0,2,0&quot;
+    &#125;)
+    void testMultipleConditionCoverageSampleFalse(int a , int b , int c) &#123;
+        CoverageSampleMethods coverageSampleMethods
+                = new CoverageSampleMethods();
+        Assertions.assertFalse(coverageSampleMethods. testMethod(a , b , c));
+    &#125;
+</code></pre>
 <p>这组测试用例同时满足了（ a==1, b == 2, c ==3 ）为（ true,true, true ）、（ true,true, false ）、（ true, false, true ）、（ true, false, false ）、（ false, true, true ）、（ false,true, false ）、（ false, false, true ）、（ false, false , false ）这种情况。对于一个包含了n个条件的判定 至少需要2个测试用例才可以。虽然这种覆盖足够严谨，但无疑给编写测试用例增加了指数级的工作量。 - 路径覆盖（ Path Coverage) 路径覆盖要求能够测试到程序中所有可能的路径。在 testMethod 方法中，可能的路径有<strong>① a=1 ，b=2②a=1,b!=2,c=3③a=1,b!=2,c!=3④a!=1,c=3⑤a!=1,c=3</strong>这五种。当存在“||”时 如果第一个条件已经为 true ,则不再计算后边表达式的值。而当存在“＆＆” 时，如果第一个条件已经为 false , 则同样不再计算后边表达式的值。满足路径覆盖的测试用例如下:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@ParameterizedTest</span><br><span class="line">@DisplayName(&quot;Path coverage sample test result true &quot;)</span><br><span class="line">@CsvSource(&#123; &quot;1,2,0&quot;, &quot;1,0,3&quot;, &quot;0,0,3&quot; &#125;)</span><br><span class="line">void testPathCoverageSampleTrue(int a, int b, int c) &#123;</span><br><span class="line"></span><br><span class="line">  CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">  Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@ParameterizedTest</span><br><span class="line">@DisplayName(&quot;Path coverage sample test result false &quot;)</span><br><span class="line">@CsvSource(&#123; &quot;1,0,0&quot;, &quot;0,0,0&quot; &#125;)</span><br><span class="line">void testPathCoverageSampleFalse(int a, int b, int c) &#123;</span><br><span class="line"></span><br><span class="line">  CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();</span><br><span class="line">  Assertions.assertFalse(coverageSampleMethods.testMethod(a, b, c));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@ParameterizedTest
+@DisplayName(&quot;Path coverage sample test result true &quot;)
+@CsvSource(&#123; &quot;1,2,0&quot;, &quot;1,0,3&quot;, &quot;0,0,3&quot; &#125;)
+void testPathCoverageSampleTrue(int a, int b, int c) &#123;
 
+  CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+  Assertions.assertTrue(coverageSampleMethods.testMethod(a, b, c));
+&#125;
+
+@ParameterizedTest
+@DisplayName(&quot;Path coverage sample test result false &quot;)
+@CsvSource(&#123; &quot;1,0,0&quot;, &quot;0,0,0&quot; &#125;)
+void testPathCoverageSampleFalse(int a, int b, int c) &#123;
+
+  CoverageSampleMethods coverageSampleMethods = new CoverageSampleMethods();
+  Assertions.assertFalse(coverageSampleMethods.testMethod(a, b, c));
+&#125;
+</code></pre>
 <p><strong>总结</strong> 1. 覆盖率数据只能代表你测试过哪些代码，不能代表你是否测试好这些代码。</p>
 <ol>
 <li>不要过于相信覆盖率数据。  </li>
@@ -216,31 +292,125 @@
 </blockquote>
 <p><strong>Junit5 由以下3个模块组成：</strong> 1. Platform，从名字也可以看出来，Junit已不仅仅想简单作为一个测试框架，更多是希望能作为一个测试平台，也就是说通过JUnit platform，其他的自动化测试引擎或自己定制的引擎都可以接入这个平台实现对接和执行。试想下TestNG运行在Junit上，是不是有点意思了。 2. Jupiter，则是Junit5的核心，它包含了很多丰富的新特性来使JUnit自动化测试更加方便、功能更加丰富和强大。<br>3. Vintage，则是一个对JUnit3，JUnit4兼容的测试引擎，使旧版本junit的自动化测试脚本可以顺畅运行在junit5下，其实也可以看作是基于junit platform实现的接入范例。 <strong>新特性</strong> - 断言:除了之前版本的各种常规断言，新版本还支持AssertThrow和AssertAll两种新的断言; - 新版本提供了tag特性，类似RobotFramework的tag一样可以给测试打标签。便于在测试执行时根据tag来选择执行; - Junit5中支持给测试方法提供参数，提高了测试数据管理的便利性。内建的几种数据源； - JUnit5全面支持JDK8 lambda语法表达； - 嵌套测试:可以更好的把相关的测试方法组织在一起。在内部类中可以使用@BeforeEach 和@AfterEach 注解，而且嵌套的层次没有限制. - 动态测试。</p>
 <h2 id="1-7-关于命名"><a href="#1-7-关于命名" class="headerlink" title="1.7 关于命名"></a>1.7 关于命名</h2><p>单元测试代码必须写在工程目录 src/test/java 下，不允许写在业务代码目录下，因为主流 Java 测试框架如 JUnit, TestNG 测试代码都是默认放在 src/test/java下的。测试资源文件则放在 src/test/resouces下，这样有利于代码目录标准化。良好的方法命名能够让开发者在测试发生错误时，快速了解出现问题的位置和影响。试比较以下两个错误信息。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; Task :test</span><br><span class="line">com.daming.demo.DemoServiceTest &gt; test83 FAILED</span><br><span class="line">java.lang . AssertionError at DemoServ ceTest java: 177</span><br><span class="line">200 tests completed, 1 failed</span><br></pre></td></tr></table></figure>
-
+<pre><code>&gt; Task :test
+com.daming.demo.DemoServiceTest &gt; test83 FAILED
+java.lang . AssertionError at DemoServ ceTest java: 177
+200 tests completed, 1 failed
+</code></pre>
 <p><em>示例2：</em></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; Task : test</span><br><span class="line">com.daming.demo.DemoServiceTest &gt; shouldSuccessWhenDecodeUserToken</span><br><span class="line">FAILED</span><br><span class="line">java.lang.AssertionError at DemoServiceTest . java : l77</span><br><span class="line">200 tests completed , 1 failed</span><br></pre></td></tr></table></figure>
-
+<pre><code>&gt; Task : test
+com.daming.demo.DemoServiceTest &gt; shouldSuccessWhenDecodeUserToken
+FAILED
+java.lang.AssertionError at DemoServiceTest . java : l77
+200 tests completed , 1 failed
+</code></pre>
 <blockquote>
 <p>主流的 Java 单元测试方法命名规范有两种，一种是传统的以＂test”开头，然后加待测场景和期待结果的命名方式，例如 testDecodeUserToknSuccess；另一种则是更易于阅读的 should … When”结构 它类似于行为测试的”Given … When … Then “叙述,只是将 Then 部分的结果前 由于 Given中的前提通常已在测试准备的＠BeforeEach 或＠BeforeAll 方法中体现，因此不必在各个测试方法名中重复， 例如shouldSuccessWhenDecodeUserToken。<br>在命名时，应当在不影响表意的情况下适当精简描述语旬长度（通常控制在5个单词内），例如 将＂shouldReturnTicketlnfomationlncludi ngOrderNumberToUserWhenAllDataisValidAndTokenIsNotExpired”缩短为”shouldGetTicketInfoWhenAllParametersValid”。过长的命名容易产生信息量过载 反而给阅读和理解带来负担。  </p>
 </blockquote>
 <h2 id="二、第一个单元测试"><a href="#二、第一个单元测试" class="headerlink" title="二、第一个单元测试"></a>二、第一个单元测试</h2><p>这一部分将编写一个简单的单元测试用例，并看一看使用单元测试和不使用单元测试的区别。接下来学习如何进行单元测试，使用的Junit版本为JUnit5。首先打开Idea，创建一个Java项目junit_demo。</p>
 <h2 id="2-1-Add-java"><a href="#2-1-Add-java" class="headerlink" title="2.1 Add.java"></a>2.1 Add.java</h2><p>在com.daming包下创建类Add.java，在其中编写一个Add方法，用于将参数a,b的值相加并且返回结果。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class Add &#123;</span><br><span class="line">    public int add(int a, int b) &#123;</span><br><span class="line">        return a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code>public class Add &#123;
+    public int add(int a, int b) &#123;
+        return a + b;
+    &#125;
+&#125;
+</code></pre>
 <h2 id="2-2-手动测试"><a href="#2-2-手动测试" class="headerlink" title="2.2 手动测试"></a>2.2 手动测试</h2><p>编写好方法后一般会测试这个方法能不能行得通，在不使用Junit的情况下，一般使用如下的方法进行测试。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Add &#123;</span><br><span class="line">    public int add(int a, int b) &#123;</span><br><span class="line">        return a + b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Add add = new Add();</span><br><span class="line">        if (add.add(1, 1) == 2) &#123;</span><br><span class="line">            System.out.println(&quot;Test pass&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            System.out.println(&quot;Test fail&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>public class Add &#123;
+    public int add(int a, int b) &#123;
+        return a + b;
+    &#125;
 
+    public static void main(String[] args) &#123;
+        Add add = new Add();
+        if (add.add(1, 1) == 2) &#123;
+            System.out.println(&quot;Test pass&quot;);
+        &#125; else &#123;
+            System.out.println(&quot;Test fail&quot;);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <p>手动测试需要新建一个实例，并且调用对应的方法，然后对结果进行比较判断，最后输出测试结果。</p>
 <h2 id="2-3-使用Junit进行测试"><a href="#2-3-使用Junit进行测试" class="headerlink" title="2.3 使用Junit进行测试"></a>2.3 使用Junit进行测试</h2><p>在com.daming包下创建一个Junit测试类AddTest.java。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">package com.daming;</span><br><span class="line"></span><br><span class="line">import org.junit.jupiter.api.BeforeAll;</span><br><span class="line">import org.junit.jupiter.api.Test;</span><br><span class="line"></span><br><span class="line">import static org.junit.jupiter.api.Assertions.assertEquals;</span><br><span class="line"></span><br><span class="line">class AddTest &#123;</span><br><span class="line">    public static Add add;</span><br><span class="line"></span><br><span class="line">    @BeforeAll // 在所有测试方法运行前运行，并且只能修饰静态方法（除非修改测试实例生命周期）     public static void setUp() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        add = new Add();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test // 表示这是个测试方法     void add() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言相等，比较2和add.add(1,1)的返回值是否相等         assertEquals(2, add.add(1, 1));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>package com.daming;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class AddTest &#123;
+    public static Add add;
+
+    @BeforeAll // 在所有测试方法运行前运行，并且只能修饰静态方法（除非修改测试实例生命周期）     public static void setUp() throws Exception &#123;
+
+        add = new Add();
+    &#125;
+
+    @Test // 表示这是个测试方法     void add() &#123;
+
+        // 断言相等，比较2和add.add(1,1)的返回值是否相等         assertEquals(2, add.add(1, 1));
+    &#125;
+&#125;
+</code></pre>
 <p>接着运行测试方法，可以看到控制台自动打印出了相关信息，包括运行的测试用例的总数，测试成功数量，测试失败数量，并且可以快速的定位到测试方法，方便进行修改。可以看到单元测试和手动测试相比要简单快捷不少</p>
 <h2 id="三、Junit注解"><a href="#三、Junit注解" class="headerlink" title="三、Junit注解"></a>三、Junit注解</h2><p>这一部分将介绍 JUnit5 中的注解，以及常用注解的使用方法。</p>
 <h2 id="3-1-JUnit常用注解"><a href="#3-1-JUnit常用注解" class="headerlink" title="3.1 JUnit常用注解"></a>3.1 JUnit常用注解</h2><p>|注解| 描述| |—-|—-| |@Test| 表示方法是一种测试方法。 与JUnit 4的@Test注解不同，此注释不会声明任何属性。| |@ParameterizedTest |表示方法是参数化测试| |@RepeatedTest |表示方法是重复测试模板| |@TestFactory |表示方法是动态测试的测试工程| |@DisplayName |为测试类或者测试方法自定义一个名称| |@BeforeEach| 表示方法在每个测试方法运行前都会运行| |@AfterEach |表示方法在每个测试方法运行之后都会运行| |@BeforeAll| 表示方法在所有测试方法之前运行| |@AfterAll| 表示方法在所有测试方法之后运行| |@Nested| 表示带注解的类是嵌套的非静态测试类,@BeforeAll和@AfterAll方法不能直接在@Nested测试类中使用，除非修改测试实例生命周期。| |@Tag |用于在类或方法级别声明用于过滤测试的标记| |@Disabled| 用于禁用测试类或测试方法| |<em>@ExtendWith</em>| 用于注册自定义扩展，该注解可以继承|</p>
 <h2 id="3-1-JUnit常用注解的使用"><a href="#3-1-JUnit常用注解的使用" class="headerlink" title="3.1 JUnit常用注解的使用"></a>3.1 JUnit常用注解的使用</h2><p>创建一个测试用例AnnotationsTest.java。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">import org.junit.jupiter.api.*;</span><br><span class="line">import org.junit.jupiter.api.Test;</span><br><span class="line"></span><br><span class="line">//常用注解测试 @DisplayName(&quot;Common annotation test&quot;)</span><br><span class="line">public class AnnotationsTest &#123;</span><br><span class="line"></span><br><span class="line">    private static Add add;</span><br><span class="line"></span><br><span class="line">    @BeforeAll</span><br><span class="line">    public static void beforeAll() &#123;</span><br><span class="line">        add=new Add();</span><br><span class="line">        //在所有测试方法运行前运行         System.out.println(&quot;Run before all test methods run&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @BeforeEach</span><br><span class="line">    public void beforeEach() &#123;</span><br><span class="line">        //每个测试方法运行前运行         System.out.println(&quot;Run before each test method runs&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @AfterEach</span><br><span class="line">    public void afterEach() &#123;</span><br><span class="line">        //每个测试方法运行完毕后运行         System.out.println(&quot;Run after each test method finishes running&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @AfterAll</span><br><span class="line">    public static void afterAll() &#123;</span><br><span class="line">        //在所有测试方法运行完毕后运行         System.out.println(&quot;Run after all test methods have finished running&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Disabled</span><br><span class="line">    @Test</span><br><span class="line">    @DisplayName(&quot;Ignore the test&quot;)</span><br><span class="line">    public void disabledTest() &#123;</span><br><span class="line">        //这个测试不会运行</span><br><span class="line">         System.out.println(&quot;This test will not run&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @DisplayName(&quot;Test Methods 1+1&quot;)</span><br><span class="line">    public void testAdd1() &#123;</span><br><span class="line">        System.out.println(&quot;Running test method1+1&quot;);</span><br><span class="line">        Assertions.assertEquals(2,add.add(1,1));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @DisplayName(&quot;Test Methods 2+2&quot;)</span><br><span class="line">    public void testAdd2() &#123;</span><br><span class="line">        System.out.println(&quot;Running test method2+2&quot;);</span><br><span class="line">        Assertions.assertEquals(4,add.add(2,2));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
+//常用注解测试 @DisplayName(&quot;Common annotation test&quot;)
+public class AnnotationsTest &#123;
+
+    private static Add add;
+
+    @BeforeAll
+    public static void beforeAll() &#123;
+        add=new Add();
+        //在所有测试方法运行前运行         System.out.println(&quot;Run before all test methods run&quot;);
+    &#125;
+
+    @BeforeEach
+    public void beforeEach() &#123;
+        //每个测试方法运行前运行         System.out.println(&quot;Run before each test method runs&quot;);
+    &#125;
+
+    @AfterEach
+    public void afterEach() &#123;
+        //每个测试方法运行完毕后运行         System.out.println(&quot;Run after each test method finishes running&quot;);
+    &#125;
+
+    @AfterAll
+    public static void afterAll() &#123;
+        //在所有测试方法运行完毕后运行         System.out.println(&quot;Run after all test methods have finished running&quot;);
+    &#125;
+
+    @Disabled
+    @Test
+    @DisplayName(&quot;Ignore the test&quot;)
+    public void disabledTest() &#123;
+        //这个测试不会运行
+         System.out.println(&quot;This test will not run&quot;);
+    &#125;
+
+    @Test
+    @DisplayName(&quot;Test Methods 1+1&quot;)
+    public void testAdd1() &#123;
+        System.out.println(&quot;Running test method1+1&quot;);
+        Assertions.assertEquals(2,add.add(1,1));
+    &#125;
+
+    @Test
+    @DisplayName(&quot;Test Methods 2+2&quot;)
+    public void testAdd2() &#123;
+        System.out.println(&quot;Running test method2+2&quot;);
+        Assertions.assertEquals(4,add.add(2,2));
+    &#125;
+
+&#125;
+</code></pre>
 <p>运行测试类查看结果。</p>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <h2 id="四、断言"><a href="#四、断言" class="headerlink" title="四、断言"></a>四、断言</h2><p>这一部分将介绍 JUnit5 中的断言，以及常用断言的使用。</p>
@@ -248,55 +418,475 @@
 <p>编写代码时，我们总是会做出一些假设，断言就是用于在代码中捕捉这些假设。断言表示为一些布尔表达式，程序员相信在程序中的某个特定点该表达式值为真，可以在任何时候启用和禁用断言验证，因此可以在测试时启用断言而在部署时禁用断言。同样，程序投入运行后，最终用户在遇到问题时可以重新启用断言。<br>使用断言可以创建更稳定、品质更好且 不易于出错的代码。当需要在一个值为FALSE时中断当前操作的话，可以使用断言。单元测试必须使用断言（Junit/JunitX）  </p>
 </blockquote>
 <h2 id="4-1-Junit常用断言"><a href="#4-1-Junit常用断言" class="headerlink" title="4.1 Junit常用断言"></a>4.1 Junit常用断言</h2><p>|断言|描述| |—-|—-| |assertEquals|断言预期值和实际值相等| |assertAll​ |分组断言,执行其中包含的所有断言| |assertArrayEquals​ |断言预期数组和实际数组相等| |assertFalse| 断言条件为假| |assertNotNull| 断言不为空| |assertSame| 断言两个对象相等| |assertTimeout​| 断言超时| |fail| 使单元测试失败|</p>
-<h2 id="4-2-常用断言的使用"><a href="#4-2-常用断言的使用" class="headerlink" title="4.2 常用断言的使用"></a>4.2 常用断言的使用</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">package com.daming;</span><br><span class="line"></span><br><span class="line">import org.junit.jupiter.api.Test;</span><br><span class="line"></span><br><span class="line">import static java.time.Duration.ofMillis;</span><br><span class="line">import static java.time.Duration.ofMinutes;</span><br><span class="line">import static org.junit.jupiter.api.Assertions.*;</span><br><span class="line"></span><br><span class="line">class Assert &#123;</span><br><span class="line">    @Test</span><br><span class="line">    void standardAssertions() &#123;</span><br><span class="line"></span><br><span class="line">        assertEquals(2, 2);</span><br><span class="line">        assertEquals(4, 4, &quot;error message&quot;);</span><br><span class="line">        assertTrue(2 == 2, () -&gt; &quot;error message&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void groupedAssertions() &#123;</span><br><span class="line"></span><br><span class="line">        // 分组断言，执行分组中所有断言，分组中任何一个断言错误都会一起报告         assertAll(&quot;person&quot;, () -&gt; assertEquals(&quot;John&quot;, &quot;John&quot;), () -&gt; assertEquals(&quot;Doe&quot;, &quot;Doe&quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void dependentAssertions() &#123;</span><br><span class="line"></span><br><span class="line">        // 分组断言         assertAll(&quot;properties&quot;, () -&gt; &#123;</span><br><span class="line">            // 在代码块中，如果断言失败，后面的代码将不会运行             String firstName = &quot;John&quot;;</span><br><span class="line">            assertNotNull(firstName);</span><br><span class="line">            // 只有前一个断言通过才会运行             assertAll(&quot;first name&quot;, () -&gt; assertTrue(firstName.startsWith(&quot;J&quot;)),</span><br><span class="line">                    () -&gt; assertTrue(firstName.endsWith(&quot;n&quot;)));</span><br><span class="line">        &#125;, () -&gt; &#123;</span><br><span class="line">            // 分组断言，不会受到first Name代码块的影响，所以即使上面的断言执行失败，这里的依旧会执行             String lastName = &quot;Doe&quot;;</span><br><span class="line">            assertNotNull(lastName);</span><br><span class="line">            // 只有前一个断言通过才会运行             assertAll(&quot;last name&quot;, () -&gt; assertTrue(lastName.startsWith(&quot;D&quot;)),</span><br><span class="line">                    () -&gt; assertTrue(lastName.endsWith(&quot;e&quot;)));</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void exceptionTesting() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言异常，抛出指定的异常，测试才会通过         Throwable exception = assertThrows(IllegalArgumentException.class, () -&gt; &#123;</span><br><span class="line">            throw new IllegalArgumentException(&quot;a message&quot;);</span><br><span class="line">        &#125;);</span><br><span class="line">        assertEquals(&quot;a message&quot;, exception.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void timeoutNotExceeded() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言超时         assertTimeout(ofMinutes(2), () -&gt; &#123;</span><br><span class="line">            // 完成任务小于2分钟时，测试通过。         &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void timeoutNotExceededWithResult() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言成功并返回结果         String actualResult = assertTimeout(ofMinutes(2), () -&gt; &#123;</span><br><span class="line">            return &quot;result&quot;;</span><br><span class="line">        &#125;);</span><br><span class="line">        assertEquals(&quot;result&quot;, actualResult);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void timeoutExceeded() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言超时，会在任务执行完毕后才返回，也就是1000毫秒后返回结果         assertTimeout(ofMillis(10), () -&gt; &#123;</span><br><span class="line">            // 执行任务花费时间1000毫秒             Thread.sleep(1000);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void timeoutExceededWithPreemptiveTermination() &#123;</span><br><span class="line"></span><br><span class="line">        // 断言超时，如果在10毫秒内任务没有执行完毕，会立即返回断言失败，不会等到1000毫秒后         assertTimeoutPreemptively(ofMillis(10), () -&gt; &#123;</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-2-常用断言的使用"><a href="#4-2-常用断言的使用" class="headerlink" title="4.2 常用断言的使用"></a>4.2 常用断言的使用</h2><pre><code>package com.daming;
 
+import org.junit.jupiter.api.Test;
+
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofMinutes;
+import static org.junit.jupiter.api.Assertions.*;
+
+class Assert &#123;
+    @Test
+    void standardAssertions() &#123;
+
+        assertEquals(2, 2);
+        assertEquals(4, 4, &quot;error message&quot;);
+        assertTrue(2 == 2, () -&gt; &quot;error message&quot;);
+    &#125;
+
+    @Test
+    void groupedAssertions() &#123;
+
+        // 分组断言，执行分组中所有断言，分组中任何一个断言错误都会一起报告         assertAll(&quot;person&quot;, () -&gt; assertEquals(&quot;John&quot;, &quot;John&quot;), () -&gt; assertEquals(&quot;Doe&quot;, &quot;Doe&quot;));
+    &#125;
+
+    @Test
+    void dependentAssertions() &#123;
+
+        // 分组断言         assertAll(&quot;properties&quot;, () -&gt; &#123;
+            // 在代码块中，如果断言失败，后面的代码将不会运行             String firstName = &quot;John&quot;;
+            assertNotNull(firstName);
+            // 只有前一个断言通过才会运行             assertAll(&quot;first name&quot;, () -&gt; assertTrue(firstName.startsWith(&quot;J&quot;)),
+                    () -&gt; assertTrue(firstName.endsWith(&quot;n&quot;)));
+        &#125;, () -&gt; &#123;
+            // 分组断言，不会受到first Name代码块的影响，所以即使上面的断言执行失败，这里的依旧会执行             String lastName = &quot;Doe&quot;;
+            assertNotNull(lastName);
+            // 只有前一个断言通过才会运行             assertAll(&quot;last name&quot;, () -&gt; assertTrue(lastName.startsWith(&quot;D&quot;)),
+                    () -&gt; assertTrue(lastName.endsWith(&quot;e&quot;)));
+        &#125;);
+    &#125;
+
+    @Test
+    void exceptionTesting() &#123;
+
+        // 断言异常，抛出指定的异常，测试才会通过         Throwable exception = assertThrows(IllegalArgumentException.class, () -&gt; &#123;
+            throw new IllegalArgumentException(&quot;a message&quot;);
+        &#125;);
+        assertEquals(&quot;a message&quot;, exception.getMessage());
+    &#125;
+
+    @Test
+    void timeoutNotExceeded() &#123;
+
+        // 断言超时         assertTimeout(ofMinutes(2), () -&gt; &#123;
+            // 完成任务小于2分钟时，测试通过。         &#125;);
+    &#125;
+
+    @Test
+    void timeoutNotExceededWithResult() &#123;
+
+        // 断言成功并返回结果         String actualResult = assertTimeout(ofMinutes(2), () -&gt; &#123;
+            return &quot;result&quot;;
+        &#125;);
+        assertEquals(&quot;result&quot;, actualResult);
+    &#125;
+
+    @Test
+    void timeoutExceeded() &#123;
+
+        // 断言超时，会在任务执行完毕后才返回，也就是1000毫秒后返回结果         assertTimeout(ofMillis(10), () -&gt; &#123;
+            // 执行任务花费时间1000毫秒             Thread.sleep(1000);
+        &#125;);
+    &#125;
+
+    @Test
+    void timeoutExceededWithPreemptiveTermination() &#123;
+
+        // 断言超时，如果在10毫秒内任务没有执行完毕，会立即返回断言失败，不会等到1000毫秒后         assertTimeoutPreemptively(ofMillis(10), () -&gt; &#123;
+            Thread.sleep(1000);
+        &#125;);
+    &#125;
+
+&#125;
+</code></pre>
 <p>运行测试类查看结果。</p>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <p>可以看到其中有2个测试没有通过，这个是我们 Thread.sleep() 方法设置的时间超时导致，通过查看这两个测试方法的执行时间，我们可以很轻易的对比assertTimeoutPreemptively()和assertTimeout()的区别。</p>
 <h2 id="4-3-AssertJ"><a href="#4-3-AssertJ" class="headerlink" title="4.3 AssertJ"></a>4.3 AssertJ</h2><p>断言负责验证逻辑 以及数据的合法性和完整性，所以有一种说法 在单元测试方法中没有断言就不是完整的测试!而在实际开发过程中仅使用JUnit的断言往往不能满足需求 要么是被局限在 JUnit 仅有的几种断言中 对于不支持的断言就不再写额外的判断逻辑 要么花费很大的精力 对要判断的条件经过一系列改造后再使用 JUnit 现有的断言。有没有第三种选择？答案是:有的! AssertJ 的最大特点是流式断言（Fluent Assertions），与Build Chain 模式或Java stream&amp;filter 写法类似。它允许一个目标对象通过各种Fluent Assert API连接判断进行多次断言并且对IDE更友好。 废话不多说，直接上代码，对比一下两者的优劣：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">//使用Junit的断言 public class JUnitSampleTest &#123;</span><br><span class="line">    @Test</span><br><span class="line">    public void testUsingJunitAssertThat() &#123;</span><br><span class="line"></span><br><span class="line">        // 字符串判断         String s = &quot;abcde&quot;;</span><br><span class="line">        Assertions.assertTrue(s.startsWith(&quot;ab&quot;));</span><br><span class="line">        Assertions.assertTrue(s.endsWith(&quot;de&quot;));</span><br><span class="line">        Assertions.assertEquals(5, s.length());</span><br><span class="line">        // 数字判断         Integer i = 50;</span><br><span class="line">        Assertions.assertTrue(i &gt; 0);</span><br><span class="line">        Assertions.assertTrue(i &lt; 100);</span><br><span class="line">        // 日期判断         Date datel = new Date();</span><br><span class="line">        Date date2 = new Date(datel.getTime() + 100);</span><br><span class="line">        Date date3 = new Date(datel.getTime() - 100);</span><br><span class="line">        Assertions.assertTrue(datel.before(date2));</span><br><span class="line">        Assertions.assertTrue(datel.after(date3));</span><br><span class="line">        // List判断         List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;);</span><br><span class="line">        Assertions.assertEquals(&quot;a&quot;, list.get(0));</span><br><span class="line">        Assertions.assertEquals(4, list.size());</span><br><span class="line">        Assertions.assertEquals(&quot;d&quot;, list.get(list.size() - 1));</span><br><span class="line">        // Map 判断         Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">        map.put(&quot;A&quot;, 1);</span><br><span class="line">        map.put(&quot;B&quot;, 2);</span><br><span class="line">        map.put(&quot;C&quot;, 3);</span><br><span class="line">        Set&lt;String&gt; set = map.keySet();</span><br><span class="line">        Assertions.assertEquals(3, map.size());</span><br><span class="line"></span><br><span class="line">        Assertions.assertTrue(set.containsAll(Arrays.asList(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>//使用Junit的断言 public class JUnitSampleTest &#123;
+    @Test
+    public void testUsingJunitAssertThat() &#123;
 
+        // 字符串判断         String s = &quot;abcde&quot;;
+        Assertions.assertTrue(s.startsWith(&quot;ab&quot;));
+        Assertions.assertTrue(s.endsWith(&quot;de&quot;));
+        Assertions.assertEquals(5, s.length());
+        // 数字判断         Integer i = 50;
+        Assertions.assertTrue(i &gt; 0);
+        Assertions.assertTrue(i &lt; 100);
+        // 日期判断         Date datel = new Date();
+        Date date2 = new Date(datel.getTime() + 100);
+        Date date3 = new Date(datel.getTime() - 100);
+        Assertions.assertTrue(datel.before(date2));
+        Assertions.assertTrue(datel.after(date3));
+        // List判断         List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;);
+        Assertions.assertEquals(&quot;a&quot;, list.get(0));
+        Assertions.assertEquals(4, list.size());
+        Assertions.assertEquals(&quot;d&quot;, list.get(list.size() - 1));
+        // Map 判断         Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;A&quot;, 1);
+        map.put(&quot;B&quot;, 2);
+        map.put(&quot;C&quot;, 3);
+        Set&lt;String&gt; set = map.keySet();
+        Assertions.assertEquals(3, map.size());
+
+        Assertions.assertTrue(set.containsAll(Arrays.asList(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;)));
+    &#125;
+&#125;
+</code></pre>
 <p><strong>下面，我们使用 AssertJ采完成同样的断言</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import static org.assertj.core.api.Assertions.assertThat;</span><br><span class="line"></span><br><span class="line">// 使用 AssertJ的断言 public class AssertJSarnpleTest &#123;</span><br><span class="line">    @Test</span><br><span class="line">    public void testUsingAssertJ() &#123;</span><br><span class="line"></span><br><span class="line">        // 子符串判断         String s = &quot;abcde&quot;;</span><br><span class="line">        assertThat(s).as(&quot;字符串判断，判断首尾及长度&quot;).startsWith(&quot;ab&quot;).endsWith(&quot;de&quot;).hasSize(5);</span><br><span class="line">        // 数字判断         Integer i = 50;</span><br><span class="line">        assertThat(i).as(&quot;数字判断,数字大小比较&quot;).isGreaterThan(1000).isLessThan(100);</span><br><span class="line">        // 日期判断         Date date1 = new Date();</span><br><span class="line">        Date date2 = new Date(date1.getTime() + 100);</span><br><span class="line">        Date date3 = new Date(date1.getTime() - 100);</span><br><span class="line">        assertThat(date1).as(&quot;日期判断：日期大小比较&quot;).isBefore(date2).isAfter(date3);</span><br><span class="line">        // list比较         List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;);</span><br><span class="line">        assertThat(list).as(&quot;list的首尾元素及长度&quot;).startsWith(&quot;a&quot;).endsWith(&quot;d&quot;).hasSize(4);</span><br><span class="line">        // Map判断         Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">        map.put(&quot;A&quot;, 1);</span><br><span class="line">        map.put(&quot;B&quot;, 2);</span><br><span class="line">        map.put(&quot;C&quot;, 3);</span><br><span class="line">        assertThat(map).as(&quot;Map的长度及键值测试&quot;).hasSize(3).containsKeys(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>import static org.assertj.core.api.Assertions.assertThat;
 
+// 使用 AssertJ的断言 public class AssertJSarnpleTest &#123;
+    @Test
+    public void testUsingAssertJ() &#123;
+
+        // 子符串判断         String s = &quot;abcde&quot;;
+        assertThat(s).as(&quot;字符串判断，判断首尾及长度&quot;).startsWith(&quot;ab&quot;).endsWith(&quot;de&quot;).hasSize(5);
+        // 数字判断         Integer i = 50;
+        assertThat(i).as(&quot;数字判断,数字大小比较&quot;).isGreaterThan(1000).isLessThan(100);
+        // 日期判断         Date date1 = new Date();
+        Date date2 = new Date(date1.getTime() + 100);
+        Date date3 = new Date(date1.getTime() - 100);
+        assertThat(date1).as(&quot;日期判断：日期大小比较&quot;).isBefore(date2).isAfter(date3);
+        // list比较         List&lt;String&gt; list = Arrays.asList(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;);
+        assertThat(list).as(&quot;list的首尾元素及长度&quot;).startsWith(&quot;a&quot;).endsWith(&quot;d&quot;).hasSize(4);
+        // Map判断         Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;A&quot;, 1);
+        map.put(&quot;B&quot;, 2);
+        map.put(&quot;C&quot;, 3);
+        assertThat(map).as(&quot;Map的长度及键值测试&quot;).hasSize(3).containsKeys(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);
+    &#125;
+&#125;
+</code></pre>
 <h2 id="五、Junit条件和假设"><a href="#五、Junit条件和假设" class="headerlink" title="五、Junit条件和假设"></a>五、Junit条件和假设</h2><p>这一部分将介绍 JUnit5 中假设以及条件测试。</p>
 <h2 id="5-1-什么是假设"><a href="#5-1-什么是假设" class="headerlink" title="5.1 什么是假设"></a>5.1 什么是假设</h2><p>JUnit5 中的假设可以用于控制测试用例是否执行，相当于条件，只有条件满足才会执行，如果条件不满足，那么将不会执行后续测试。 Junit 5 中的假设主要有如下内容：</p>
 <p>|方法| 描述| |—-|—-| |assumeFalse| 假设为false时才会执行，如果为true，那么将会直接停止执行| |assumeTrue |​假设为true时才会执行，如果为false，那么将会直接停止执行| |assumingThat| assumingThat接受一个函数式接口Executable，假设为true时执行，将会执行Executable，否则不会执行Executable。|</p>
-<h2 id="5-2-Junit假设示例"><a href="#5-2-Junit假设示例" class="headerlink" title="5.2 Junit假设示例"></a>5.2 Junit假设示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package com.daming;</span><br><span class="line"></span><br><span class="line">import static org.junit.jupiter.api.Assumptions.assumeFalse;</span><br><span class="line">import static org.junit.jupiter.api.Assumptions.assumeTrue;</span><br><span class="line">import static org.junit.jupiter.api.Assumptions.assumingThat;</span><br><span class="line"></span><br><span class="line">import org.junit.jupiter.api.Test;</span><br><span class="line"></span><br><span class="line">class Assumption &#123;</span><br><span class="line">         @Test</span><br><span class="line">        void assumeTrueTest() &#123;</span><br><span class="line">             //如果假设传入的值为True，那么就会执行后面测试，否则直接停止执行             assumeTrue(false);</span><br><span class="line">            System.out.println(&quot;This will not be implemented.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Test</span><br><span class="line">        void assumeFalseTest() &#123;</span><br><span class="line">            //如果假设传入的值为false，那么就会执行后面测试，否则直接停止执行             assumeFalse(true);</span><br><span class="line">            System.out.println(&quot;This will not be implemented.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Test</span><br><span class="line">        void assumingThatTest() &#123;</span><br><span class="line">            //    assumingThat​(boolean assumption, Executable executable)             //assumingThat 接受一个boolean值assumption，如果assumption为true，那么将会执行executable，否则不会执行，             //但是assumingThat即使为false也不会影响后续代码的执行，他和assumeFalse和assumeTrue不同，assumingThat只             //决定Executable是否执行，Executable是一个函数式接口，接受一个没有参数和返回值的方法。             assumingThat(false,</span><br><span class="line">                () -&gt; &#123;</span><br><span class="line">                    System.out.println(&quot;This will not be implemented.&quot;);</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">            //下面的输出将会执行             System.out.println(&quot;This will be implemented.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-2-Junit假设示例"><a href="#5-2-Junit假设示例" class="headerlink" title="5.2 Junit假设示例"></a>5.2 Junit假设示例</h2><pre><code>package com.daming;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumingThat;
+
+import org.junit.jupiter.api.Test;
+
+class Assumption &#123;
+         @Test
+        void assumeTrueTest() &#123;
+             //如果假设传入的值为True，那么就会执行后面测试，否则直接停止执行             assumeTrue(false);
+            System.out.println(&quot;This will not be implemented.&quot;);
+        &#125;
+
+        @Test
+        void assumeFalseTest() &#123;
+            //如果假设传入的值为false，那么就会执行后面测试，否则直接停止执行             assumeFalse(true);
+            System.out.println(&quot;This will not be implemented.&quot;);
+        &#125;
+
+        @Test
+        void assumingThatTest() &#123;
+            //    assumingThat​(boolean assumption, Executable executable)             //assumingThat 接受一个boolean值assumption，如果assumption为true，那么将会执行executable，否则不会执行，             //但是assumingThat即使为false也不会影响后续代码的执行，他和assumeFalse和assumeTrue不同，assumingThat只             //决定Executable是否执行，Executable是一个函数式接口，接受一个没有参数和返回值的方法。             assumingThat(false,
+                () -&gt; &#123;
+                    System.out.println(&quot;This will not be implemented.&quot;);
+                &#125;);
+
+            //下面的输出将会执行             System.out.println(&quot;This will be implemented.&quot;);
+        &#125;
+&#125;
+</code></pre>
 <p>执行测试，</p>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <p>从测试结果中可以看到Runs:3/3(2 skipped),因为 assumeFalse 和 assumeTrue 的条件都不满足，所以执行被中止了，而 assumingThat 不会影响到后续代码，所以System.out.println(“This will be implemented.”);被执行，我们可以在控制台中看到输出。</p>
 <h2 id="六、JUnit禁用测试"><a href="#六、JUnit禁用测试" class="headerlink" title="六、JUnit禁用测试"></a>六、JUnit禁用测试</h2><p>这一部分将介绍 JUnit5中如何禁用不需要运行的测试。</p>
 <h2 id="6-1-禁用测试"><a href="#6-1-禁用测试" class="headerlink" title="6.1 禁用测试"></a>6.1 禁用测试</h2><p>在测试过程中，可能有一些测试暂时还不需要运行，比如功能还没有完成，或者 Bug 短时间无法处理，我们希望这一段测试不会运行，那么可以采用**@Disabled**注解的方式。 @Disabled注解可以注解在方法上或者注解在类上，注解在方法上时禁用对应的方法，注解在类上的时候禁用该类中所有的测试。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">package com.daming;</span><br><span class="line"></span><br><span class="line">import org.junit.jupiter.api.Disabled;</span><br><span class="line">import org.junit.jupiter.api.Test;</span><br><span class="line"></span><br><span class="line">class DisabledTest &#123;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    // 使用@Disabled注解关闭     @Disabled</span><br><span class="line">    void disabled() &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Not running&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    void open() &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;running&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>package com.daming;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+class DisabledTest &#123;
+
+    @Test
+    // 使用@Disabled注解关闭     @Disabled
+    void disabled() &#123;
+
+        System.out.println(&quot;Not running&quot;);
+    &#125;
+
+    @Test
+    void open() &#123;
+
+        System.out.println(&quot;running&quot;);
+    &#125;
+&#125;
+</code></pre>
 <p>运行测试</p>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <p>可以看到注解了@Disabled的方法并没有运行。</p>
 <h2 id="七、重复测试"><a href="#七、重复测试" class="headerlink" title="七、重复测试"></a>七、重复测试</h2><p>这一部分将介绍 JUnit5 中如何使用重复测试。在有些场景中，我们可要对一个测试运行多次，当然不可能手动运行多次！！因为 Junit 提供了重复测试，下面我们来如何使用它。</p>
 <h2 id="7-1-RepeatedTest注解"><a href="#7-1-RepeatedTest注解" class="headerlink" title="7.1 @RepeatedTest注解"></a>7.1 @RepeatedTest注解</h2><p>通过@RepeatedTest注解可以完成重复测试的工作，@RepeatedTest中的value属性可以设置重复的次数，name属性可以自定义重复测试的显示名，显示名可以由占位符和静态文本组合，目前支持下面几种占位符： - {displayName}: 显示名 - {currentRepetition}: 当前重复次数 - {totalRepetitions}: 总重复次数</p>
 <p>Junit 重复测试提供了默认的显示名的模式，repetition {currentRepetition} of {totalRepetitions}，如果没有自定义的话，显示名就会是下面这种形式repetition 1 of 10，Junit 还提供了另外一种显示名RepeatedTest.LONG_DISPLAY_NAME他显示的形式为{displayName} :: repetition {currentRepetition} of {totalRepetitions}，只需要将@RepeatedTest(value = 1, name = RepeatedTest.LONG_DISPLAY_NAME)注解到方法上就可以使用这种显示方式。如果想要用编程的方式获取当前循环测试的相关详细，可以将RepetitionInfo实例注入到相关的方法中。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import org.junit.jupiter.api.DisplayName;</span><br><span class="line">import org.junit.jupiter.api.RepeatedTest;</span><br><span class="line">import org.junit.jupiter.api.RepetitionInfo;</span><br><span class="line">import org.junit.jupiter.api.TestInfo;</span><br><span class="line"></span><br><span class="line">class Repeated &#123;</span><br><span class="line"></span><br><span class="line">    //自定义重复测试的显示名称     @RepeatedTest(value=10,name=&quot;&#123;displayName&#125;--&gt;&#123;currentRepetition&#125;/&#123;totalRepetitions&#125;&quot;)</span><br><span class="line">    @DisplayName(&quot;repeatTest&quot;)</span><br><span class="line">    void repeatedTest(TestInfo testInfo,RepetitionInfo repetitionInfo) &#123;</span><br><span class="line">        //我们可以通过TestInfo在测试中获取测试的相关信息，比如输出自定义的测试名         System.out.println(testInfo.getDisplayName());</span><br><span class="line">        //输出当前重复次数         System.out.println(&quot;currentRepetition:&quot;+repetitionInfo.getCurrentRepetition());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.RepetitionInfo;
+import org.junit.jupiter.api.TestInfo;
 
+class Repeated &#123;
+
+    //自定义重复测试的显示名称     @RepeatedTest(value=10,name=&quot;&#123;displayName&#125;--&gt;&#123;currentRepetition&#125;/&#123;totalRepetitions&#125;&quot;)
+    @DisplayName(&quot;repeatTest&quot;)
+    void repeatedTest(TestInfo testInfo,RepetitionInfo repetitionInfo) &#123;
+        //我们可以通过TestInfo在测试中获取测试的相关信息，比如输出自定义的测试名         System.out.println(testInfo.getDisplayName());
+        //输出当前重复次数         System.out.println(&quot;currentRepetition:&quot;+repetitionInfo.getCurrentRepetition());
+
+    &#125;
+
+&#125;
+</code></pre>
 <p>运行结果如下所示：</p>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <h2 id="八、通过-FixMethodOrder-MethodSorters-NAME-ASCENDING-控制测试类中方法执行的顺序"><a href="#八、通过-FixMethodOrder-MethodSorters-NAME-ASCENDING-控制测试类中方法执行的顺序" class="headerlink" title="八、通过@FixMethodOrder(MethodSorters.NAME_ASCENDING)控制测试类中方法执行的顺序"></a>八、通过@FixMethodOrder(MethodSorters.NAME_ASCENDING)控制测试类中方法执行的顺序</h2><p>直接看示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">@FixMethodOrder(MethodSorters.NAME_ASCENDING)</span><br><span class="line">public class OrderedTest &#123;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    // @Ignore     public void testAAdd() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;A Method&quot;);</span><br><span class="line"></span><br><span class="line">        assertEquals(1, 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    // @Ignore     @Disabled</span><br><span class="line">    public void testBUpdate() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;B Method&quot;);</span><br><span class="line"></span><br><span class="line">        assertEquals(2, 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    // @Ignore     public void testCSelect() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;C Method&quot;);</span><br><span class="line">        assertEquals(2, 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    // @Ignore     public void testDDelete() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;D Method&quot;);</span><br><span class="line">        assertEquals(1, 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class OrderedTest &#123;
 
+    @Test
+    // @Ignore     public void testAAdd() throws Exception &#123;
+
+        System.out.println(&quot;A Method&quot;);
+
+        assertEquals(1, 1);
+    &#125;
+
+    @Test
+    // @Ignore     @Disabled
+    public void testBUpdate() throws Exception &#123;
+
+        System.out.println(&quot;B Method&quot;);
+
+        assertEquals(2, 2);
+    &#125;
+
+    @Test
+    // @Ignore     public void testCSelect() throws Exception &#123;
+
+        System.out.println(&quot;C Method&quot;);
+        assertEquals(2, 2);
+    &#125;
+
+    @Test
+    // @Ignore     public void testDDelete() throws Exception &#123;
+
+        System.out.println(&quot;D Method&quot;);
+        assertEquals(1, 1);
+    &#125;
+
+&#125;
+</code></pre>
 <p>![](data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='0' height='0'></svg>)</p>
 <p>这种测试方式将按方法名称的进行排序，由于是按字符的字典顺序，所以以这种方式指定执行顺序会始终保持一致；不过这种方式需要对测试方法有一定的命名规则，如 测试方法均以testNNN开头（NNN表示测试方法序列号 001-999）。</p>
 <p><strong>利用这个特性可以做一些事务性的测试，比如在测试过程中我们仅仅想观察测试结果的正确性，而不想污染数据库数据。在测试时可以按照“添加=&gt;更新=&gt;查询=&gt;删除”控制测试方法的执行顺序，这样进行一轮测试后数据库不会增加测试用例的数据(MapNestedTest)</strong></p>
 <h2 id="九、实战"><a href="#九、实战" class="headerlink" title="九、实战"></a>九、实战</h2><p>如下是两个可以参考的测试用例</p>
-<h2 id="9-1-DAO层测试用例"><a href="#9-1-DAO层测试用例" class="headerlink" title="9.1 DAO层测试用例"></a>9.1 DAO层测试用例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">@FixMethodOrder(MethodSorters.NAME_ASCENDING)</span><br><span class="line">public class ProductDaoTest extends BaseTest &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private ProductDao productDao;</span><br><span class="line">    @Autowired</span><br><span class="line">    private ProductImgDao productImgDao;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testAInsertProduct() throws Exception &#123;</span><br><span class="line">        Shop shop1 = new Shop();</span><br><span class="line">        shop1.setShopId(1L);</span><br><span class="line">        ProductCategory pc1 = new ProductCategory();</span><br><span class="line">        pc1.setProductCategoryId(1L);</span><br><span class="line">        // 初始化三个商品实例并添加进shopId为1的店铺里，         // 同时商品类别Id也为1         Product product1 = new Product();</span><br><span class="line">        product1.setProductName(&quot;测试1&quot;);</span><br><span class="line">        product1.setProductDesc(&quot;测试Desc1&quot;);</span><br><span class="line">        product1.setImgAddr(&quot;test1&quot;);</span><br><span class="line">        product1.setPriority(1);</span><br><span class="line">        product1.setEnableStatus(1);</span><br><span class="line">        product1.setCreateTime(new Date());</span><br><span class="line">        product1.setLastEditTime(new Date());</span><br><span class="line">        product1.setShop(shop1);</span><br><span class="line">        product1.setProductCategory(pc1);</span><br><span class="line">        Product product2 = new Product();</span><br><span class="line">        product2.setProductName(&quot;测试2&quot;);</span><br><span class="line">        product2.setProductDesc(&quot;测试Desc2&quot;);</span><br><span class="line">        product2.setImgAddr(&quot;test2&quot;);</span><br><span class="line">        product2.setPriority(2);</span><br><span class="line">        product2.setEnableStatus(0);</span><br><span class="line">        product2.setCreateTime(new Date());</span><br><span class="line">        product2.setLastEditTime(new Date());</span><br><span class="line">        product2.setShop(shop1);</span><br><span class="line">        product2.setProductCategory(pc1);</span><br><span class="line">        Product product3 = new Product();</span><br><span class="line">        product3.setProductName(&quot;test3&quot;);</span><br><span class="line">        product3.setProductDesc(&quot;测试Desc3&quot;);</span><br><span class="line">        product3.setImgAddr(&quot;test3&quot;);</span><br><span class="line">        product3.setPriority(3);</span><br><span class="line">        product3.setEnableStatus(1);</span><br><span class="line">        product3.setCreateTime(new Date());</span><br><span class="line">        product3.setLastEditTime(new Date());</span><br><span class="line">        product3.setShop(shop1);</span><br><span class="line">        product3.setProductCategory(pc1);</span><br><span class="line">        // 判断添加是否成功         int effectedNum = productDao.insertProduct(product1);</span><br><span class="line">        assertEquals(1, effectedNum);</span><br><span class="line">        effectedNum = productDao.insertProduct(product2);</span><br><span class="line">        assertEquals(1, effectedNum);</span><br><span class="line">        effectedNum = productDao.insertProduct(product3);</span><br><span class="line">        assertEquals(1, effectedNum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testBQueryProductList() throws Exception &#123;</span><br><span class="line">        Product productCondition = new Product();</span><br><span class="line">        // 分页查询，预期返回三条结果         List&lt;Product&gt; productList = productDao.queryProductList(productCondition, 0, 3);</span><br><span class="line">        assertEquals(3, productList.size());</span><br><span class="line">        // 查询名称为测试的商品总数         int count = productDao.queryProductCount(productCondition);</span><br><span class="line">        assertEquals(5, count);</span><br><span class="line">        // 使用商品名称模糊查询，预期返回两条结果         productCondition.setProductName(&quot;测试&quot;);</span><br><span class="line">        productList = productDao.queryProductList(productCondition, 0, 3);</span><br><span class="line">        assertEquals(2, productList.size());</span><br><span class="line">        count = productDao.queryProductCount(productCondition);</span><br><span class="line">        assertEquals(2, count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testCQueryProductByProductId() throws Exception &#123;</span><br><span class="line">        long productId = 1;</span><br><span class="line">        // 初始化两个商品详情图实例作为productId为1的商品下的详情图片         // 批量插入到商品详情图表中         ProductImg productImg1 = new ProductImg();</span><br><span class="line">        productImg1.setImgAddr(&quot;图片1&quot;);</span><br><span class="line">        productImg1.setImgDesc(&quot;测试图片1&quot;);</span><br><span class="line">        productImg1.setPriority(1);</span><br><span class="line">        productImg1.setCreateTime(new Date());</span><br><span class="line">        productImg1.setProductId(productId);</span><br><span class="line">        ProductImg productImg2 = new ProductImg();</span><br><span class="line">        productImg2.setImgAddr(&quot;图片2&quot;);</span><br><span class="line">        productImg2.setPriority(1);</span><br><span class="line">        productImg2.setCreateTime(new Date());</span><br><span class="line">        productImg2.setProductId(productId);</span><br><span class="line">        List&lt;ProductImg&gt; productImgList = new ArrayList&lt;ProductImg&gt;();</span><br><span class="line">        productImgList.add(productImg1);</span><br><span class="line">        productImgList.add(productImg2);</span><br><span class="line">        int effectedNum = productImgDao.batchInsertProductImg(productImgList);</span><br><span class="line">        assertEquals(2, effectedNum);</span><br><span class="line">        // 查询productId为1的商品信息并校验返回的详情图实例列表size是否为2         Product product = productDao.queryProductById(productId);</span><br><span class="line">        assertEquals(2, product.getProductImgList().size());</span><br><span class="line">        // 删除新增的这两个商品详情图实例         effectedNum = productImgDao.deleteProductImgByProductId(productId);</span><br><span class="line">        assertEquals(2, effectedNum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testDUpdateProduct() throws Exception &#123;</span><br><span class="line">        Product product = new Product();</span><br><span class="line">        ProductCategory pc = new ProductCategory();</span><br><span class="line">        Shop shop = new Shop();</span><br><span class="line">        shop.setShopId(1L);</span><br><span class="line">        pc.setProductCategoryId(2L);</span><br><span class="line">        product.setProductId(1L);</span><br><span class="line">        product.setShop(shop);</span><br><span class="line">        product.setProductName(&quot;第二个产品&quot;);</span><br><span class="line">        product.setProductCategory(pc);</span><br><span class="line">        // 修改productId为1的商品的名称         // 以及商品类别并校验影响的行数是否为1         int effectedNum = productDao.updateProduct(product);</span><br><span class="line">        assertEquals(1, effectedNum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void testEUpdateProductCategoryToNull() &#123;</span><br><span class="line">        // 将productCategoryId为2的商品类别下面的商品的商品类别置为空         int effectedNum = productDao.updateProductCategoryToNull(2L);</span><br><span class="line">        assertEquals(1, effectedNum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testFDeleteShopAuthMap() throws Exception &#123;</span><br><span class="line">        // 清除掉insert方法添加的商品         Product productCondition = new Product();</span><br><span class="line">        ProductCategory pc = new ProductCategory();</span><br><span class="line">        pc.setProductCategoryId(1L);</span><br><span class="line">        productCondition.setProductCategory(pc);</span><br><span class="line">        // 通过输入productCategoryId为1去商品表中查出新增的三条测试数据         List&lt;Product&gt; productList = productDao.queryProductList(productCondition, 0, 3);</span><br><span class="line">        assertEquals(3, productList.size());</span><br><span class="line">        // 循环删除这三条数据         for (Product p : productList) &#123;</span><br><span class="line">            int effectedNum = productDao.deleteProduct(p.getProductId(), 1);</span><br><span class="line">            assertEquals(1, effectedNum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="9-1-DAO层测试用例"><a href="#9-1-DAO层测试用例" class="headerlink" title="9.1 DAO层测试用例"></a>9.1 DAO层测试用例</h2><pre><code>@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ProductDaoTest extends BaseTest &#123;
 
-<h2 id="9-2-Service层测试用例"><a href="#9-2-Service层测试用例" class="headerlink" title="9.2 Service层测试用例"></a>9.2 Service层测试用例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">public class ShopServiceTest extends BaseTest &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private ShopService shopService;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void testGetShopList() &#123;</span><br><span class="line">        Shop shopCondition = new Shop();</span><br><span class="line">        ShopCategory sc = new ShopCategory();</span><br><span class="line">        sc.setShopCategoryId(3L);</span><br><span class="line">        shopCondition.setShopCategory(sc);</span><br><span class="line">        ShopExecution se = shopService.getShopList(shopCondition, 2, 2);</span><br><span class="line">        System.out.println(&quot;店铺列表数为：&quot; + se.getShopList().size());</span><br><span class="line">        System.out.println(&quot;店铺总数为：&quot; + se.getCount());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testModifyShop() throws ShopOperationException, FileNotFoundException &#123;</span><br><span class="line">        Shop shop = new Shop();</span><br><span class="line">        shop.setShopId(1L);</span><br><span class="line">        shop.setShopName(&quot;修改后的店铺名称&quot;);</span><br><span class="line">        File shopImg = new File(&quot;/Users/baidu/work/image/dabai.jpg&quot;);</span><br><span class="line">        InputStream is = new FileInputStream(shopImg);</span><br><span class="line">        ImageHolder imageHolder = new ImageHolder(&quot;dabai.jpg&quot;, is);</span><br><span class="line">        ShopExecution shopExecution = shopService.modifyShop(shop, imageHolder);</span><br><span class="line">        System.out.println(&quot;新的图片地址为：&quot; + shopExecution.getShop().getShopImg());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    @Ignore</span><br><span class="line">    public void testAddShop() throws ShopOperationException, FileNotFoundException &#123;</span><br><span class="line">        Shop shop = new Shop();</span><br><span class="line">        PersonInfo owner = new PersonInfo();</span><br><span class="line">        Area area = new Area();</span><br><span class="line">        ShopCategory shopCategory = new ShopCategory();</span><br><span class="line">        owner.setUserId(1L);</span><br><span class="line">        area.setAreaId(2);</span><br><span class="line">        shopCategory.setShopCategoryId(1L);</span><br><span class="line">        shop.setOwner(owner);</span><br><span class="line">        shop.setArea(area);</span><br><span class="line">        shop.setShopCategory(shopCategory);</span><br><span class="line">        shop.setShopName(&quot;测试的店铺3&quot;);</span><br><span class="line">        shop.setShopDesc(&quot;test3&quot;);</span><br><span class="line">        shop.setShopAddr(&quot;test3&quot;);</span><br><span class="line">        shop.setPhone(&quot;test3&quot;);</span><br><span class="line">        shop.setCreateTime(new Date());</span><br><span class="line">        shop.setEnableStatus(ShopStateEnum.CHECK.getState());</span><br><span class="line">        shop.setAdvice(&quot;审核中&quot;);</span><br><span class="line">        File shopImg = new File(&quot;/Users/baidu/work/image/xiaohuangren.jpg&quot;);</span><br><span class="line">        InputStream is = new FileInputStream(shopImg);</span><br><span class="line">        ImageHolder imageHolder = new ImageHolder(shopImg.getName(), is);</span><br><span class="line">        ShopExecution se = shopService.addShop(shop, imageHolder );</span><br><span class="line">        assertEquals(ShopStateEnum.CHECK.getState(), se.getState());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    @Autowired
+    private ProductDao productDao;
+    @Autowired
+    private ProductImgDao productImgDao;
 
+    @Test
+    @Ignore
+    public void testAInsertProduct() throws Exception &#123;
+        Shop shop1 = new Shop();
+        shop1.setShopId(1L);
+        ProductCategory pc1 = new ProductCategory();
+        pc1.setProductCategoryId(1L);
+        // 初始化三个商品实例并添加进shopId为1的店铺里，         // 同时商品类别Id也为1         Product product1 = new Product();
+        product1.setProductName(&quot;测试1&quot;);
+        product1.setProductDesc(&quot;测试Desc1&quot;);
+        product1.setImgAddr(&quot;test1&quot;);
+        product1.setPriority(1);
+        product1.setEnableStatus(1);
+        product1.setCreateTime(new Date());
+        product1.setLastEditTime(new Date());
+        product1.setShop(shop1);
+        product1.setProductCategory(pc1);
+        Product product2 = new Product();
+        product2.setProductName(&quot;测试2&quot;);
+        product2.setProductDesc(&quot;测试Desc2&quot;);
+        product2.setImgAddr(&quot;test2&quot;);
+        product2.setPriority(2);
+        product2.setEnableStatus(0);
+        product2.setCreateTime(new Date());
+        product2.setLastEditTime(new Date());
+        product2.setShop(shop1);
+        product2.setProductCategory(pc1);
+        Product product3 = new Product();
+        product3.setProductName(&quot;test3&quot;);
+        product3.setProductDesc(&quot;测试Desc3&quot;);
+        product3.setImgAddr(&quot;test3&quot;);
+        product3.setPriority(3);
+        product3.setEnableStatus(1);
+        product3.setCreateTime(new Date());
+        product3.setLastEditTime(new Date());
+        product3.setShop(shop1);
+        product3.setProductCategory(pc1);
+        // 判断添加是否成功         int effectedNum = productDao.insertProduct(product1);
+        assertEquals(1, effectedNum);
+        effectedNum = productDao.insertProduct(product2);
+        assertEquals(1, effectedNum);
+        effectedNum = productDao.insertProduct(product3);
+        assertEquals(1, effectedNum);
+    &#125;
+
+    @Test
+    @Ignore
+    public void testBQueryProductList() throws Exception &#123;
+        Product productCondition = new Product();
+        // 分页查询，预期返回三条结果         List&lt;Product&gt; productList = productDao.queryProductList(productCondition, 0, 3);
+        assertEquals(3, productList.size());
+        // 查询名称为测试的商品总数         int count = productDao.queryProductCount(productCondition);
+        assertEquals(5, count);
+        // 使用商品名称模糊查询，预期返回两条结果         productCondition.setProductName(&quot;测试&quot;);
+        productList = productDao.queryProductList(productCondition, 0, 3);
+        assertEquals(2, productList.size());
+        count = productDao.queryProductCount(productCondition);
+        assertEquals(2, count);
+    &#125;
+
+    @Test
+    @Ignore
+    public void testCQueryProductByProductId() throws Exception &#123;
+        long productId = 1;
+        // 初始化两个商品详情图实例作为productId为1的商品下的详情图片         // 批量插入到商品详情图表中         ProductImg productImg1 = new ProductImg();
+        productImg1.setImgAddr(&quot;图片1&quot;);
+        productImg1.setImgDesc(&quot;测试图片1&quot;);
+        productImg1.setPriority(1);
+        productImg1.setCreateTime(new Date());
+        productImg1.setProductId(productId);
+        ProductImg productImg2 = new ProductImg();
+        productImg2.setImgAddr(&quot;图片2&quot;);
+        productImg2.setPriority(1);
+        productImg2.setCreateTime(new Date());
+        productImg2.setProductId(productId);
+        List&lt;ProductImg&gt; productImgList = new ArrayList&lt;ProductImg&gt;();
+        productImgList.add(productImg1);
+        productImgList.add(productImg2);
+        int effectedNum = productImgDao.batchInsertProductImg(productImgList);
+        assertEquals(2, effectedNum);
+        // 查询productId为1的商品信息并校验返回的详情图实例列表size是否为2         Product product = productDao.queryProductById(productId);
+        assertEquals(2, product.getProductImgList().size());
+        // 删除新增的这两个商品详情图实例         effectedNum = productImgDao.deleteProductImgByProductId(productId);
+        assertEquals(2, effectedNum);
+    &#125;
+
+    @Test
+    @Ignore
+    public void testDUpdateProduct() throws Exception &#123;
+        Product product = new Product();
+        ProductCategory pc = new ProductCategory();
+        Shop shop = new Shop();
+        shop.setShopId(1L);
+        pc.setProductCategoryId(2L);
+        product.setProductId(1L);
+        product.setShop(shop);
+        product.setProductName(&quot;第二个产品&quot;);
+        product.setProductCategory(pc);
+        // 修改productId为1的商品的名称         // 以及商品类别并校验影响的行数是否为1         int effectedNum = productDao.updateProduct(product);
+        assertEquals(1, effectedNum);
+    &#125;
+
+    @Test
+    public void testEUpdateProductCategoryToNull() &#123;
+        // 将productCategoryId为2的商品类别下面的商品的商品类别置为空         int effectedNum = productDao.updateProductCategoryToNull(2L);
+        assertEquals(1, effectedNum);
+    &#125;
+
+    @Test
+    @Ignore
+    public void testFDeleteShopAuthMap() throws Exception &#123;
+        // 清除掉insert方法添加的商品         Product productCondition = new Product();
+        ProductCategory pc = new ProductCategory();
+        pc.setProductCategoryId(1L);
+        productCondition.setProductCategory(pc);
+        // 通过输入productCategoryId为1去商品表中查出新增的三条测试数据         List&lt;Product&gt; productList = productDao.queryProductList(productCondition, 0, 3);
+        assertEquals(3, productList.size());
+        // 循环删除这三条数据         for (Product p : productList) &#123;
+            int effectedNum = productDao.deleteProduct(p.getProductId(), 1);
+            assertEquals(1, effectedNum);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="9-2-Service层测试用例"><a href="#9-2-Service层测试用例" class="headerlink" title="9.2 Service层测试用例"></a>9.2 Service层测试用例</h2><pre><code>public class ShopServiceTest extends BaseTest &#123;
+    @Autowired
+    private ShopService shopService;
+
+    @Test
+    public void testGetShopList() &#123;
+        Shop shopCondition = new Shop();
+        ShopCategory sc = new ShopCategory();
+        sc.setShopCategoryId(3L);
+        shopCondition.setShopCategory(sc);
+        ShopExecution se = shopService.getShopList(shopCondition, 2, 2);
+        System.out.println(&quot;店铺列表数为：&quot; + se.getShopList().size());
+        System.out.println(&quot;店铺总数为：&quot; + se.getCount());
+    &#125;
+
+    @Test
+    @Ignore
+    public void testModifyShop() throws ShopOperationException, FileNotFoundException &#123;
+        Shop shop = new Shop();
+        shop.setShopId(1L);
+        shop.setShopName(&quot;修改后的店铺名称&quot;);
+        File shopImg = new File(&quot;/Users/baidu/work/image/dabai.jpg&quot;);
+        InputStream is = new FileInputStream(shopImg);
+        ImageHolder imageHolder = new ImageHolder(&quot;dabai.jpg&quot;, is);
+        ShopExecution shopExecution = shopService.modifyShop(shop, imageHolder);
+        System.out.println(&quot;新的图片地址为：&quot; + shopExecution.getShop().getShopImg());
+    &#125;
+
+    @Test
+    @Ignore
+    public void testAddShop() throws ShopOperationException, FileNotFoundException &#123;
+        Shop shop = new Shop();
+        PersonInfo owner = new PersonInfo();
+        Area area = new Area();
+        ShopCategory shopCategory = new ShopCategory();
+        owner.setUserId(1L);
+        area.setAreaId(2);
+        shopCategory.setShopCategoryId(1L);
+        shop.setOwner(owner);
+        shop.setArea(area);
+        shop.setShopCategory(shopCategory);
+        shop.setShopName(&quot;测试的店铺3&quot;);
+        shop.setShopDesc(&quot;test3&quot;);
+        shop.setShopAddr(&quot;test3&quot;);
+        shop.setPhone(&quot;test3&quot;);
+        shop.setCreateTime(new Date());
+        shop.setEnableStatus(ShopStateEnum.CHECK.getState());
+        shop.setAdvice(&quot;审核中&quot;);
+        File shopImg = new File(&quot;/Users/baidu/work/image/xiaohuangren.jpg&quot;);
+        InputStream is = new FileInputStream(shopImg);
+        ImageHolder imageHolder = new ImageHolder(shopImg.getName(), is);
+        ShopExecution se = shopService.addShop(shop, imageHolder );
+        assertEquals(ShopStateEnum.CHECK.getState(), se.getState());
+    &#125;
+
+&#125;
+</code></pre>
 <h2 id="十、MockMvc"><a href="#十、MockMvc" class="headerlink" title="十、MockMvc"></a>十、MockMvc</h2><blockquote>
 <p>对模块进行集成测试时，希望能够通过输入URL对Controller进行测试，如果通过启动服务器，建立http client进行测试，这样会使得测试变得很麻烦，比如，启动速度慢，测试验证不方便，依赖网络环境等，这样会导致测试无法进行，为了可以对Controller进行测试，可以通过引入MockMVC进行解决。<br>MockMvc实现了对Http请求的模拟，能够直接使用网络的形式，转换到Controller的调用，这样可以使得测试速度快、不依赖网络环境，而且提供了一套验证的工具，这样可以使得请求的验证统一而且很方便。  </p>
 </blockquote>
-<h2 id="10-1-先来看一个示例"><a href="#10-1-先来看一个示例" class="headerlink" title="10.1 先来看一个示例"></a>10.1 先来看一个示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void getAllCategoryTest() throws Exception</span><br><span class="line">   &#123;</span><br><span class="line">       String responseString = mockMvc.perform</span><br><span class="line">               (</span><br><span class="line">                       MockMvcRequestBuilders.post(&quot;http://127.0.0.1:8888/login&quot;)          //请求的url,请求的方法是post                                //get(&quot;/user/showUser2&quot;)          //请求的url,请求的方法是get                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)//发送数据的格式                                .param(&quot;username&quot;,&quot;hyh&quot;)   //添加参数(可以添加多个)                        .param(&quot;password&quot;,&quot;123&quot;)   //添加参数(可以添加多个)                )</span><br><span class="line">               //.andExpect(status().isOk())    //返回的状态是200                .andDo(print())         //打印出请求和相应的内容                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串        System.out.println(&quot;-----返回的json = &quot; + responseString);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
+<h2 id="10-1-先来看一个示例"><a href="#10-1-先来看一个示例" class="headerlink" title="10.1 先来看一个示例"></a>10.1 先来看一个示例</h2><pre><code>public void getAllCategoryTest() throws Exception
+   &#123;
+       String responseString = mockMvc.perform
+               (
+                       MockMvcRequestBuilders.post(&quot;http://127.0.0.1:8888/login&quot;)          //请求的url,请求的方法是post                                //get(&quot;/user/showUser2&quot;)          //请求的url,请求的方法是get                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)//发送数据的格式                                .param(&quot;username&quot;,&quot;hyh&quot;)   //添加参数(可以添加多个)                        .param(&quot;password&quot;,&quot;123&quot;)   //添加参数(可以添加多个)                )
+               //.andExpect(status().isOk())    //返回的状态是200                .andDo(print())         //打印出请求和相应的内容                .andReturn().getResponse().getContentAsString();   //将相应的数据转换为字符串        System.out.println(&quot;-----返回的json = &quot; + responseString);
+   &#125;
+</code></pre>
 <p><strong>过程:</strong> 1. mockMvc.perform执行一个RequestBuilder请求，会自动执行SpringMVC的流程并映射到相应的控制器执行处理； 2. MockMvcRequestBuilders.post(“<a href="https://link.zhihu.com/?target=http://127.0.0.1:8888/login">http://127.0.0.1:8888/login</a>“)构造一个请求 3. ResultActions.andExpect添加执行完成后的断言 4. ResultActions.andDo添加一个结果处理器，表示要对结果做点什么事情，比如此处使用MockMvcResultHandlers.print()输出整个响应结果信息。 5. ResultActions.andReturn表示执行完成后返回相应的结果。</p>
 <p><strong>整个测试过程非常有规律：</strong> 1. 准备测试环境</p>
 <ol>
@@ -375,24 +965,155 @@
 <li>FlashMap getFlashMap()：得到FlashMap；  </li>
 <li>Object getAsyncResult()/Object getAsyncResult(long timeout)：得到异步执行的结果；  </li>
 </ul>
-<h2 id="10-3-测试实例"><a href="#10-3-测试实例" class="headerlink" title="10.3 测试实例"></a>10.3 测试实例</h2><h2 id="10-3-1-测试普通控制器"><a href="#10-3-1-测试普通控制器" class="headerlink" title="10.3.1 测试普通控制器"></a>10.3.1 测试普通控制器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//测试普通控制器 mockMvc.perform(get(&quot;/user/&#123;id&#125;&quot;, 1)) //执行请求         .andExpect(model().attributeExists(&quot;user&quot;)) //验证存储模型数据         .andExpect(view().name(&quot;user/view&quot;)) //验证viewName         .andExpect(forwardedUrl(&quot;/WEB-INF/jsp/user/view.jsp&quot;))//验证视图渲染时forward到的jsp         .andExpect(status().isOk())//验证状态码         .andDo(print()); //输出MvcResult到控制台</span><br></pre></td></tr></table></figure>
+<h2 id="10-3-测试实例"><a href="#10-3-测试实例" class="headerlink" title="10.3 测试实例"></a>10.3 测试实例</h2><h2 id="10-3-1-测试普通控制器"><a href="#10-3-1-测试普通控制器" class="headerlink" title="10.3.1 测试普通控制器"></a>10.3.1 测试普通控制器</h2><pre><code>//测试普通控制器 mockMvc.perform(get(&quot;/user/&#123;id&#125;&quot;, 1)) //执行请求         .andExpect(model().attributeExists(&quot;user&quot;)) //验证存储模型数据         .andExpect(view().name(&quot;user/view&quot;)) //验证viewName         .andExpect(forwardedUrl(&quot;/WEB-INF/jsp/user/view.jsp&quot;))//验证视图渲染时forward到的jsp         .andExpect(status().isOk())//验证状态码         .andDo(print()); //输出MvcResult到控制台
+</code></pre>
+<h2 id="10-3-2-测试普通控制器，但是URL错误，即404"><a href="#10-3-2-测试普通控制器，但是URL错误，即404" class="headerlink" title="10.3.2 测试普通控制器，但是URL错误，即404"></a>10.3.2 测试普通控制器，但是URL错误，即404</h2><pre><code>//找不到控制器，404测试 MvcResult result = mockMvc.perform(get(&quot;/user2/&#123;id&#125;&quot;, 1)) //执行请求         .andDo(print())  
+        .andExpect(status().isNotFound()) //验证控制器不存在         .andReturn();  
+Assert.assertNull(result.getModelAndView()); //自定义断言
+</code></pre>
+<h2 id="10-3-3-得到MvcResult自定义验证"><a href="#10-3-3-得到MvcResult自定义验证" class="headerlink" title="10.3.3 得到MvcResult自定义验证"></a>10.3.3 得到MvcResult自定义验证</h2><pre><code>MvcResult result = mockMvc.perform(get(&quot;/user/&#123;id&#125;&quot;, 1))//执行请求         .andReturn(); //返回MvcResult Assert.assertNotNull(result.getModelAndView().getModel().get(&quot;user&quot;)); //自定义断言
+</code></pre>
+<h2 id="10-3-4-验证请求参数验证失败出错"><a href="#10-3-4-验证请求参数验证失败出错" class="headerlink" title="10.3.4 验证请求参数验证失败出错"></a>10.3.4 验证请求参数验证失败出错</h2><pre><code>mockMvc.perform(post(&quot;/user&quot;).param(&quot;name&quot;, &quot;admin&quot;)) //执行请求         .andExpect(model().hasErrors()) //验证模型有错误         .andExpect(model().attributeDoesNotExist(&quot;name&quot;)) //验证存在错误的属性         .andExpect(view().name(&quot;showCreateForm&quot;)); //验证视图
+</code></pre>
+<h2 id="10-3-5-文件上传"><a href="#10-3-5-文件上传" class="headerlink" title="10.3.5 文件上传"></a>10.3.5 文件上传</h2><pre><code>//文件上传 byte[] bytes = new byte[] &#123;1, 2&#125;;  
+mockMvc.perform(fileUpload(&quot;/user/&#123;id&#125;/icon&quot;, 1L).file(&quot;icon&quot;, bytes)) //执行文件上传         .andExpect(model().attribute(&quot;icon&quot;, bytes)) //验证属性相等性         .andExpect(view().name(&quot;success&quot;)); //验证视图
+</code></pre>
+<h2 id="10-3-6-JSON请求-响应验证"><a href="#10-3-6-JSON请求-响应验证" class="headerlink" title="10.3.6 JSON请求/响应验证"></a>10.3.6 JSON请求/响应验证</h2><pre><code>String requestBody = &quot;&#123;\&quot;id\&quot;:1, \&quot;name\&quot;:\&quot;zhang\&quot;&#125;&quot;;  
+mockMvc.perform(post(&quot;/user&quot;)  
+            .contentType(MediaType.APPLICATION_JSON).content(requestBody)  
+            .accept(MediaType.APPLICATION_JSON)) //执行请求         .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //验证响应contentType         .andExpect(jsonPath(&quot;$.id&quot;).value(1)); //使用Json path验证JSON 请参考http://goessner.net/articles/JsonPath/ 
+String errorBody = &quot;&#123;id:1, name:zhang&#125;&quot;;  
+MvcResult result = mockMvc.perform(post(&quot;/user&quot;)  
+        .contentType(MediaType.APPLICATION_JSON).content(errorBody)  
+        .accept(MediaType.APPLICATION_JSON)) //执行请求         .andExpect(status().isBadRequest()) //400错误请求         .andReturn();  
 
-<h2 id="10-3-2-测试普通控制器，但是URL错误，即404"><a href="#10-3-2-测试普通控制器，但是URL错误，即404" class="headerlink" title="10.3.2 测试普通控制器，但是URL错误，即404"></a>10.3.2 测试普通控制器，但是URL错误，即404</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//找不到控制器，404测试 MvcResult result = mockMvc.perform(get(&quot;/user2/&#123;id&#125;&quot;, 1)) //执行请求         .andDo(print())  </span><br><span class="line">        .andExpect(status().isNotFound()) //验证控制器不存在         .andReturn();  </span><br><span class="line">Assert.assertNull(result.getModelAndView()); //自定义断言</span><br></pre></td></tr></table></figure>
+Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));//错误的请求内容体
+</code></pre>
+<h2 id="10-3-7-XML请求-响应验证"><a href="#10-3-7-XML请求-响应验证" class="headerlink" title="10.3.7 XML请求/响应验证"></a>10.3.7 XML请求/响应验证</h2><pre><code>//XML请求/响应 String requestBody = &quot;&lt;user&gt;&lt;id&gt;1&lt;/id&gt;&lt;name&gt;zhang&lt;/name&gt;&lt;/user&gt;&quot;;  
+mockMvc.perform(post(&quot;/user&quot;)  
+        .contentType(MediaType.APPLICATION_XML).content(requestBody)  
+        .accept(MediaType.APPLICATION_XML)) //执行请求         .andDo(print())  
+        .andExpect(content().contentType(MediaType.APPLICATION_XML)) //验证响应contentType         .andExpect(xpath(&quot;/user/id/text()&quot;).string(&quot;1&quot;)); //使用XPath表达式验证XML 请参考http://www.w3school.com.cn/xpath/ 
+String errorBody = &quot;&lt;user&gt;&lt;id&gt;1&lt;/id&gt;&lt;name&gt;zhang&lt;/name&gt;&quot;;  
+MvcResult result = mockMvc.perform(post(&quot;/user&quot;)  
+        .contentType(MediaType.APPLICATION_XML).content(errorBody)  
+        .accept(MediaType.APPLICATION_XML)) //执行请求         .andExpect(status().isBadRequest()) //400错误请求         .andReturn();  
 
-<h2 id="10-3-3-得到MvcResult自定义验证"><a href="#10-3-3-得到MvcResult自定义验证" class="headerlink" title="10.3.3 得到MvcResult自定义验证"></a>10.3.3 得到MvcResult自定义验证</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MvcResult result = mockMvc.perform(get(&quot;/user/&#123;id&#125;&quot;, 1))//执行请求         .andReturn(); //返回MvcResult Assert.assertNotNull(result.getModelAndView().getModel().get(&quot;user&quot;)); //自定义断言</span><br></pre></td></tr></table></figure>
-
-<h2 id="10-3-4-验证请求参数验证失败出错"><a href="#10-3-4-验证请求参数验证失败出错" class="headerlink" title="10.3.4 验证请求参数验证失败出错"></a>10.3.4 验证请求参数验证失败出错</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mockMvc.perform(post(&quot;/user&quot;).param(&quot;name&quot;, &quot;admin&quot;)) //执行请求         .andExpect(model().hasErrors()) //验证模型有错误         .andExpect(model().attributeDoesNotExist(&quot;name&quot;)) //验证存在错误的属性         .andExpect(view().name(&quot;showCreateForm&quot;)); //验证视图</span><br></pre></td></tr></table></figure>
-
-<h2 id="10-3-5-文件上传"><a href="#10-3-5-文件上传" class="headerlink" title="10.3.5 文件上传"></a>10.3.5 文件上传</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//文件上传 byte[] bytes = new byte[] &#123;1, 2&#125;;  </span><br><span class="line">mockMvc.perform(fileUpload(&quot;/user/&#123;id&#125;/icon&quot;, 1L).file(&quot;icon&quot;, bytes)) //执行文件上传         .andExpect(model().attribute(&quot;icon&quot;, bytes)) //验证属性相等性         .andExpect(view().name(&quot;success&quot;)); //验证视图</span><br></pre></td></tr></table></figure>
-
-<h2 id="10-3-6-JSON请求-响应验证"><a href="#10-3-6-JSON请求-响应验证" class="headerlink" title="10.3.6 JSON请求/响应验证"></a>10.3.6 JSON请求/响应验证</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">String requestBody = &quot;&#123;\&quot;id\&quot;:1, \&quot;name\&quot;:\&quot;zhang\&quot;&#125;&quot;;  </span><br><span class="line">mockMvc.perform(post(&quot;/user&quot;)  </span><br><span class="line">            .contentType(MediaType.APPLICATION_JSON).content(requestBody)  </span><br><span class="line">            .accept(MediaType.APPLICATION_JSON)) //执行请求         .andExpect(content().contentType(MediaType.APPLICATION_JSON)) //验证响应contentType         .andExpect(jsonPath(&quot;$.id&quot;).value(1)); //使用Json path验证JSON 请参考http://goessner.net/articles/JsonPath/ </span><br><span class="line">String errorBody = &quot;&#123;id:1, name:zhang&#125;&quot;;  </span><br><span class="line">MvcResult result = mockMvc.perform(post(&quot;/user&quot;)  </span><br><span class="line">        .contentType(MediaType.APPLICATION_JSON).content(errorBody)  </span><br><span class="line">        .accept(MediaType.APPLICATION_JSON)) //执行请求         .andExpect(status().isBadRequest()) //400错误请求         .andReturn();  </span><br><span class="line"></span><br><span class="line">Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));//错误的请求内容体</span><br></pre></td></tr></table></figure>
-
-<h2 id="10-3-7-XML请求-响应验证"><a href="#10-3-7-XML请求-响应验证" class="headerlink" title="10.3.7 XML请求/响应验证"></a>10.3.7 XML请求/响应验证</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//XML请求/响应 String requestBody = &quot;&lt;user&gt;&lt;id&gt;1&lt;/id&gt;&lt;name&gt;zhang&lt;/name&gt;&lt;/user&gt;&quot;;  </span><br><span class="line">mockMvc.perform(post(&quot;/user&quot;)  </span><br><span class="line">        .contentType(MediaType.APPLICATION_XML).content(requestBody)  </span><br><span class="line">        .accept(MediaType.APPLICATION_XML)) //执行请求         .andDo(print())  </span><br><span class="line">        .andExpect(content().contentType(MediaType.APPLICATION_XML)) //验证响应contentType         .andExpect(xpath(&quot;/user/id/text()&quot;).string(&quot;1&quot;)); //使用XPath表达式验证XML 请参考http://www.w3school.com.cn/xpath/ </span><br><span class="line">String errorBody = &quot;&lt;user&gt;&lt;id&gt;1&lt;/id&gt;&lt;name&gt;zhang&lt;/name&gt;&quot;;  </span><br><span class="line">MvcResult result = mockMvc.perform(post(&quot;/user&quot;)  </span><br><span class="line">        .contentType(MediaType.APPLICATION_XML).content(errorBody)  </span><br><span class="line">        .accept(MediaType.APPLICATION_XML)) //执行请求         .andExpect(status().isBadRequest()) //400错误请求         .andReturn();  </span><br><span class="line"></span><br><span class="line">Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));//错误的请求内容体</span><br></pre></td></tr></table></figure>
-
+Assert.assertTrue(HttpMessageNotReadableException.class.isAssignableFrom(result.getResolvedException().getClass()));//错误的请求内容体
+</code></pre>
 <h2 id="10-3-8-完整的代码示例"><a href="#10-3-8-完整的代码示例" class="headerlink" title="10.3.8 完整的代码示例"></a>10.3.8 完整的代码示例</h2><p><a href="https://link.zhihu.com/?target=https://github.com/zhangkaitao/spring4-showcase/tree/master/spring-mvc-test">demo code</a>.</p>
 <h2 id="10-4-实战"><a href="#10-4-实战" class="headerlink" title="10.4 实战"></a>10.4 实战</h2><p>参考UserControllerTest,已经涵盖日常测试类80%的常用技巧。(Rest风格，包括文件上传测试等,照猫画虎即可)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line">@RunWith(SpringRunner.class)</span><br><span class="line">@SpringBootTest</span><br><span class="line">public class UserControllerTest &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private WebApplicationContext wac;</span><br><span class="line"></span><br><span class="line">    private MockMvc mockMvc;</span><br><span class="line"></span><br><span class="line">    // 这个方法在每个方法执行之前都会执行一遍     @Before</span><br><span class="line">    public void setup() &#123;</span><br><span class="line"></span><br><span class="line">        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();   //指定WebApplicationContext，将会从该上下文获取相应的控制器并得到相应的MockMvc     &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenUploadSuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        String result = mockMvc</span><br><span class="line">                .perform(fileUpload(&quot;/file&quot;).file(new MockMultipartFile(&quot;file&quot;, &quot;test.txt&quot;,</span><br><span class="line">                        &quot;multipart/form-data&quot;, &quot;hello upload&quot;.getBytes(&quot;UTF-8&quot;))))</span><br><span class="line">                    .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();</span><br><span class="line">        System.out.println(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenQuerySuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        String result = mockMvc</span><br><span class="line">                .perform(get(&quot;/user&quot;).param(&quot;username&quot;, &quot;jojo&quot;).param(&quot;age&quot;, &quot;18&quot;)</span><br><span class="line">                        .param(&quot;ageTo&quot;, &quot;60&quot;).param(&quot;xxx&quot;, &quot;yyy&quot;)</span><br><span class="line">                        // .param(&quot;size&quot;, &quot;15&quot;)                         // .param(&quot;page&quot;, &quot;3&quot;)                         // .param(&quot;sort&quot;, &quot;age,desc&quot;)                         .contentType(MediaType.APPLICATION_JSON_UTF8))</span><br><span class="line">                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.length()&quot;).value(3)).andReturn()</span><br><span class="line">                .getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">        System.out.println(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenGetInfoSuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        String result = mockMvc.perform(get(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))</span><br><span class="line">                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.username&quot;).value(&quot;tom&quot;))</span><br><span class="line">                .andReturn().getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">        System.out.println(result);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenGetInfoFail() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        mockMvc.perform(get(&quot;/user/a&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))</span><br><span class="line">                .andExpect(status().is4xxClientError());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenCreateSuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        Date date = new Date();</span><br><span class="line">        System.out.println(date.getTime());</span><br><span class="line">        String content = &quot;&#123;\&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:\&quot;root\&quot;,\&quot;birthday\&quot;:&quot; + date.getTime()</span><br><span class="line">                + &quot;&#125;&quot;;</span><br><span class="line">        String reuslt = mockMvc</span><br><span class="line">                .perform(</span><br><span class="line">                        post(&quot;/user&quot;).contentType(MediaType.APPLICATION_JSON_UTF8).content(content))</span><br><span class="line">                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;)).andReturn()</span><br><span class="line">                .getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">        System.out.println(reuslt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenCreateFail() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        Date date = new Date();</span><br><span class="line">        System.out.println(date.getTime());</span><br><span class="line">        String content = &quot;&#123;\&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:null,\&quot;birthday\&quot;:&quot; + date.getTime()</span><br><span class="line">                + &quot;&#125;&quot;;</span><br><span class="line">        String reuslt = mockMvc</span><br><span class="line">                .perform(</span><br><span class="line">                        post(&quot;/user&quot;).contentType(MediaType.APPLICATION_JSON_UTF8).content(content))</span><br><span class="line">                // .andExpect(status().isOk())                 // .andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;))                 .andReturn().getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">        System.out.println(reuslt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenUpdateSuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault())</span><br><span class="line">                .toInstant().toEpochMilli());</span><br><span class="line">        System.out.println(date.getTime());</span><br><span class="line">        String content = &quot;&#123;\&quot;id\&quot;:\&quot;1\&quot;, \&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:null,\&quot;birthday\&quot;:&quot;</span><br><span class="line">                + date.getTime() + &quot;&#125;&quot;;</span><br><span class="line">        String reuslt = mockMvc</span><br><span class="line">                .perform(put(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8)</span><br><span class="line">                        .content(content))</span><br><span class="line">                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;)).andReturn()</span><br><span class="line">                .getResponse().getContentAsString();</span><br><span class="line"></span><br><span class="line">        System.out.println(reuslt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void whenDeleteSuccess() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        mockMvc.perform(delete(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))</span><br><span class="line">                .andExpect(status().isOk());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@RunWith(SpringRunner.class)
+@SpringBootTest
+public class UserControllerTest &#123;
 
+    @Autowired
+    private WebApplicationContext wac;
+
+    private MockMvc mockMvc;
+
+    // 这个方法在每个方法执行之前都会执行一遍     @Before
+    public void setup() &#123;
+
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();   //指定WebApplicationContext，将会从该上下文获取相应的控制器并得到相应的MockMvc     &#125;
+
+    @Test
+    public void whenUploadSuccess() throws Exception &#123;
+
+        String result = mockMvc
+                .perform(fileUpload(&quot;/file&quot;).file(new MockMultipartFile(&quot;file&quot;, &quot;test.txt&quot;,
+                        &quot;multipart/form-data&quot;, &quot;hello upload&quot;.getBytes(&quot;UTF-8&quot;))))
+                    .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+    &#125;
+
+    @Test
+    public void whenQuerySuccess() throws Exception &#123;
+
+        String result = mockMvc
+                .perform(get(&quot;/user&quot;).param(&quot;username&quot;, &quot;jojo&quot;).param(&quot;age&quot;, &quot;18&quot;)
+                        .param(&quot;ageTo&quot;, &quot;60&quot;).param(&quot;xxx&quot;, &quot;yyy&quot;)
+                        // .param(&quot;size&quot;, &quot;15&quot;)                         // .param(&quot;page&quot;, &quot;3&quot;)                         // .param(&quot;sort&quot;, &quot;age,desc&quot;)                         .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.length()&quot;).value(3)).andReturn()
+                .getResponse().getContentAsString();
+
+        System.out.println(result);
+    &#125;
+
+    @Test
+    public void whenGetInfoSuccess() throws Exception &#123;
+
+        String result = mockMvc.perform(get(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.username&quot;).value(&quot;tom&quot;))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(result);
+    &#125;
+
+    @Test
+    public void whenGetInfoFail() throws Exception &#123;
+
+        mockMvc.perform(get(&quot;/user/a&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is4xxClientError());
+    &#125;
+
+    @Test
+    public void whenCreateSuccess() throws Exception &#123;
+
+        Date date = new Date();
+        System.out.println(date.getTime());
+        String content = &quot;&#123;\&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:\&quot;root\&quot;,\&quot;birthday\&quot;:&quot; + date.getTime()
+                + &quot;&#125;&quot;;
+        String reuslt = mockMvc
+                .perform(
+                        post(&quot;/user&quot;).contentType(MediaType.APPLICATION_JSON_UTF8).content(content))
+                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;)).andReturn()
+                .getResponse().getContentAsString();
+
+        System.out.println(reuslt);
+    &#125;
+
+    @Test
+    public void whenCreateFail() throws Exception &#123;
+
+        Date date = new Date();
+        System.out.println(date.getTime());
+        String content = &quot;&#123;\&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:null,\&quot;birthday\&quot;:&quot; + date.getTime()
+                + &quot;&#125;&quot;;
+        String reuslt = mockMvc
+                .perform(
+                        post(&quot;/user&quot;).contentType(MediaType.APPLICATION_JSON_UTF8).content(content))
+                // .andExpect(status().isOk())                 // .andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;))                 .andReturn().getResponse().getContentAsString();
+
+        System.out.println(reuslt);
+    &#125;
+
+    @Test
+    public void whenUpdateSuccess() throws Exception &#123;
+
+        Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli());
+        System.out.println(date.getTime());
+        String content = &quot;&#123;\&quot;id\&quot;:\&quot;1\&quot;, \&quot;username\&quot;:\&quot;tom\&quot;,\&quot;password\&quot;:null,\&quot;birthday\&quot;:&quot;
+                + date.getTime() + &quot;&#125;&quot;;
+        String reuslt = mockMvc
+                .perform(put(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(content))
+                .andExpect(status().isOk()).andExpect(jsonPath(&quot;$.id&quot;).value(&quot;1&quot;)).andReturn()
+                .getResponse().getContentAsString();
+
+        System.out.println(reuslt);
+    &#125;
+
+    @Test
+    public void whenDeleteSuccess() throws Exception &#123;
+
+        mockMvc.perform(delete(&quot;/user/1&quot;).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+    &#125;
+
+&#125;
+</code></pre>
 <p>本文转自 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55648107">https://zhuanlan.zhihu.com/p/55648107</a>，如有侵权，请联系删除。</p>
 
       

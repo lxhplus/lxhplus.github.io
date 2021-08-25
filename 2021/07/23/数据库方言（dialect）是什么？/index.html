@@ -170,13 +170,23 @@
 <span id="more"></span>
 
 <p>今天看公司代码</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;property name=&quot;dialect&quot; value=&quot;mysql&quot;/&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">    &lt;settings&gt;</span><br><span class="line">        &lt;setting name=&quot;mapUnderscoreToCamelCase&quot; value=&quot;true&quot;/&gt;</span><br><span class="line">    &lt;/settings&gt;</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;configuration&gt;
+    &lt;properties&gt;
+        &lt;property name=&quot;dialect&quot; value=&quot;mysql&quot;/&gt;
+    &lt;/properties&gt;
+    &lt;settings&gt;
+        &lt;setting name=&quot;mapUnderscoreToCamelCase&quot; value=&quot;true&quot;/&gt;
+    &lt;/settings&gt;
+</code></pre>
 <p><strong>这段代码的作用分别是设置数据库方言和将以下划线方式命名的数据库列映射到java对象的驼峰式命名属性中。</strong></p>
 <p>抛开数据库，生活中的方言是什么？方言就是某个地方的特色语言，是一种区别于其它地方的语言，只有你们这一小块地方能听懂，出了这个地方又是另一种方言。</p>
 <p>数据库方言也是如此，MySQL 是一种方言，Oracle 也是一种方言，MSSQL 也是一种方言，他们之间在遵循 SQL 规范的前提下，都有各自的扩展特性。</p>
 <p>拿分页来说，MySQL 的分页是用关键字 <code>limit</code>， 而 Oracle 用的是 <code>ROWNUM</code>，MSSQL 可能又是另一种分页方式。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">\# mysql</span><br><span class="line">select \* from t\_user limit 10;</span><br><span class="line">\# oracle</span><br><span class="line">select \* from t\_user t where ROWNUM &lt;10;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code>\# mysql
+select \* from t\_user limit 10;
+\# oracle
+select \* from t\_user t where ROWNUM &lt;10;
+</code></pre>
 <p>这对于 ORM 框架来说，为了在上层的ORM层做了无差别调用，比如分页，对使用者来说，不管你底层用的是MySQL还是Oracle，他们用的都是一样的接口，但是底层需要根据你使用的数据库方言不同而调用不同的DBAPI。用户只需要在初始化的时候指定用哪种方言就好，其它的事情ORM框架帮你完成了</p>
 <p><img src="https://foofish.net/images/layers.png" alt="layers.png"></p>
 <p>图片来自：<a target="_blank" rel="noopener" href="http://aosabook.org/en/sqlalchemy.html">http://aosabook.org/en/sqlalchemy.html</a></p>

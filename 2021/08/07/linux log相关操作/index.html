@@ -8,15 +8,13 @@
   <link rel="dns-prefetch" href="http://example.com">
   <title>linux log相关操作 | Once More</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="解决rocketmq报错This date have’t data!">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="linux log相关操作">
 <meta property="og:url" content="http://example.com/2021/08/07/linux%20log%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C/index.html">
 <meta property="og:site_name" content="Once More">
-<meta property="og:description" content="解决rocketmq报错This date have’t data!">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-07T06:28:45.336Z">
-<meta property="article:modified_time" content="2021-08-10T02:41:07.219Z">
+<meta property="article:modified_time" content="2021-08-11T16:12:01.181Z">
 <meta property="article:author" content="李鑫航">
 <meta name="twitter:card" content="summary">
   
@@ -166,7 +164,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>解决rocketmq报错This date have’t data!</p>
+        <hr>
 <span id="more"></span> 
 <blockquote>
 <p>今天登录公司堡垒机查看各种服务的日志，日志里的字段还是有些不懂，尽快摸索吧，先看看代码里logback.xml里是否有对应部分。</p>
@@ -216,14 +214,27 @@
 <li>  -k 选择以哪个区间进行排序。</li>
 </ul>
 <p>特别提一下-t和-k，他们是一对，具体用法如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">如果有一个文件的内容是这样：</span><br><span class="line">[rocrocket@rocrocket programming]$ cat facebook.txt</span><br><span class="line">banana:30:5.5</span><br><span class="line">apple:10:2.5</span><br><span class="line">pear:90:2.3</span><br><span class="line">orange:20:3.4</span><br><span class="line">这个文件有三列，列与列之间用冒号隔开了，第一列表示水果类型，第二列表示水果数量，第三列表示水果价格。那么我想以水果数量来排序，也就是以第二列来排序，如何利用sort实现？幸好，sort提供了-t选项，后面可以设定间隔符。指定了间隔符之后，就可以用-k来指定列数了。</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -n -k 2 -t ‘:’ facebook.txt</span><br><span class="line">apple:10:2.5</span><br><span class="line">orange:20:3.4</span><br><span class="line">banana:30:5.5</span><br><span class="line">pear:90:2.3 </span><br></pre></td></tr></table></figure>
-
+<pre><code>如果有一个文件的内容是这样：
+[rocrocket@rocrocket programming]$ cat facebook.txt
+banana:30:5.5
+apple:10:2.5
+pear:90:2.3
+orange:20:3.4
+这个文件有三列，列与列之间用冒号隔开了，第一列表示水果类型，第二列表示水果数量，第三列表示水果价格。那么我想以水果数量来排序，也就是以第二列来排序，如何利用sort实现？幸好，sort提供了-t选项，后面可以设定间隔符。指定了间隔符之后，就可以用-k来指定列数了。
+[rocrocket@rocrocket programming]$ sort -n -k 2 -t ‘:’ facebook.txt
+apple:10:2.5
+orange:20:3.4
+banana:30:5.5
+pear:90:2.3 
+</code></pre>
 <h1 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h1><p>wc命令并不是去上厕所了，而是word count的简称，通常用于统计作用，在默认的情况下，wc将计算指定文件的行数、字数，以及字节数。使用的命令为：<br><code>wc testfile</code><br>先查看testfile文件的内容，可以看到：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat testfile </span><br><span class="line">Linux networks are becoming more and more common, but scurity is often an overlooked issue. Unfortunately, in today’s environment all networks are potential hacker targets, fro0m tp-secret military research networks to small home LANs. Linux Network Securty focuses on securing Linux in a networked environment, where the security of the entire network needs to be considered rather than just isolated machines. It uses a mix of theory and practicl techniques to teach administrators how to install and use security applications, as well as how the applcations work and why they are necesary. </span><br></pre></td></tr></table></figure>
-
+<pre><code>$ cat testfile 
+Linux networks are becoming more and more common, but scurity is often an overlooked issue. Unfortunately, in today’s environment all networks are potential hacker targets, fro0m tp-secret military research networks to small home LANs. Linux Network Securty focuses on securing Linux in a networked environment, where the security of the entire network needs to be considered rather than just isolated machines. It uses a mix of theory and practicl techniques to teach administrators how to install and use security applications, as well as how the applcations work and why they are necesary. 
+</code></pre>
 <p>使用wc统计，结果如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wc testfile                         # testfile文件的统计信息 </span><br><span class="line">3 92 598 testfile                     # testfile文件的行数为3、单词数92、字节数598 </span><br></pre></td></tr></table></figure>
-
+<pre><code>$ wc testfile                         # testfile文件的统计信息 
+3 92 598 testfile                     # testfile文件的行数为3、单词数92、字节数598 
+</code></pre>
 <p>wc命令还支持3个参数：</p>
 <ul>
 <li>  -c 只显示Bytes数。</li>

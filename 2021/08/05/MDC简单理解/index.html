@@ -192,15 +192,55 @@
 <p>但是无论怎么用，都逃不过 MDC API 的使用，下面先花一分钟快速入门，然后再逐步去深入 MDC。</p>
 <h1 id="1-MDC-快速入门"><a href="#1-MDC-快速入门" class="headerlink" title="1. MDC 快速入门"></a><strong><strong>1.</strong></strong> <strong>MDC 快速入门</strong></h1><p>MDC 全称是 Mapped Diagnostic Context，可以粗略的理解成是一个线程安全的存放诊断日志的容器。</p>
 <p>首先看看 MDC 基本的 API 的用法，能抛代码的就不多废话（根据 logback 官方案例改编）。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.slf4j.MDC; import java.util.UUID; /\*\* \* MDC快速入门示例</span><br><span class="line"> </span><br><span class="line">public class SimpleMDC &#123; private static final Logger logger = LoggerFactory.getLogger(SimpleMDC.class); public static final String REQ\_ID = &quot;REQ\_ID&quot;; public static void main(String\[\] args) &#123;</span><br><span class="line">        MDC.put(REQ\_ID, UUID.randomUUID().toString());</span><br><span class="line">        logger.info(&quot;开始调用服务A，进行业务处理&quot;);</span><br><span class="line">        logger.info(&quot;业务处理完毕，可以释放空间了，避免内存泄露&quot;);</span><br><span class="line">        MDC.remove(REQ\_ID);</span><br><span class="line">        logger.info(&quot;REQ\_ID 还有吗？&#123;&#125;&quot;, MDC.get(REQ\_ID) != null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code>import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.slf4j.MDC; import java.util.UUID; /\*\* \* MDC快速入门示例
+ 
+public class SimpleMDC &#123; private static final Logger logger = LoggerFactory.getLogger(SimpleMDC.class); public static final String REQ\_ID = &quot;REQ\_ID&quot;; public static void main(String\[\] args) &#123;
+        MDC.put(REQ\_ID, UUID.randomUUID().toString());
+        logger.info(&quot;开始调用服务A，进行业务处理&quot;);
+        logger.info(&quot;业务处理完毕，可以释放空间了，避免内存泄露&quot;);
+        MDC.remove(REQ\_ID);
+        logger.info(&quot;REQ\_ID 还有吗？&#123;&#125;&quot;, MDC.get(REQ\_ID) != null);
+    &#125;
+&#125;
+</code></pre>
 <p>代码编写完，貌似只有 MDC.put(K,V) 、MDC.remove(K) 两句是陌生的，先不着急解释它，等案例跑完就懂了，咱们继续往下看。</p>
 <p>接下来配置 logback.xml，通过 %X{REQ_ID} 来打印 REQ_ID 的信息，logback.xml 文件内容如下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;configuration\&gt;</span><br><span class="line">    &lt;appender name\=&quot;CONSOLE&quot; class\=&quot;ch.qos.logback.core.ConsoleAppender&quot;\&gt;</span><br><span class="line">        &lt;layout class\=&quot;ch.qos.logback.classic.PatternLayout&quot;\&gt;</span><br><span class="line">            &lt;Pattern\&gt;\[%t\] \[%X&#123;REQ\_ID&#125;\] - %m%n&lt;/Pattern\&gt;</span><br><span class="line">        &lt;/layout\&gt;</span><br><span class="line">    &lt;/appender\&gt;</span><br><span class="line">    &lt;root level\=&quot;debug&quot;\&gt;</span><br><span class="line">        &lt;appender-ref ref\=&quot;CONSOLE&quot;/&gt;</span><br><span class="line">    &lt;/root\&gt;</span><br><span class="line">&lt;/configuration\&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;configuration\&gt;
+    &lt;appender name\=&quot;CONSOLE&quot; class\=&quot;ch.qos.logback.core.ConsoleAppender&quot;\&gt;
+        &lt;layout class\=&quot;ch.qos.logback.classic.PatternLayout&quot;\&gt;
+            &lt;Pattern\&gt;\[%t\] \[%X&#123;REQ\_ID&#125;\] - %m%n&lt;/Pattern\&gt;
+        &lt;/layout\&gt;
+    &lt;/appender\&gt;
+    &lt;root level\=&quot;debug&quot;\&gt;
+        &lt;appender-ref ref\=&quot;CONSOLE&quot;/&gt;
+    &lt;/root\&gt;
+&lt;/configuration\&gt;
+</code></pre>
 <p>引入依赖包，让程序快点跑起来看看效果。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies\&gt;</span><br><span class="line">    &lt;dependency\&gt;</span><br><span class="line">        &lt;groupId\&gt;org.slf4j&lt;/groupId\&gt;</span><br><span class="line">        &lt;artifactId\&gt;slf4j-api&lt;/artifactId\&gt;</span><br><span class="line">        &lt;version\&gt;1.7.7&lt;/version\&gt;</span><br><span class="line">    &lt;/dependency\&gt;</span><br><span class="line">    &lt;dependency\&gt;</span><br><span class="line">        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;</span><br><span class="line">        &lt;artifactId\&gt;logback-core&lt;/artifactId\&gt;</span><br><span class="line">        &lt;version\&gt;1.2.3&lt;/version\&gt;</span><br><span class="line">    &lt;/dependency\&gt;</span><br><span class="line">    &lt;dependency\&gt;</span><br><span class="line">        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;</span><br><span class="line">        &lt;artifactId\&gt;logback-access&lt;/artifactId\&gt;</span><br><span class="line">        &lt;version\&gt;1.2.3&lt;/version\&gt;</span><br><span class="line">    &lt;/dependency\&gt;</span><br><span class="line">    &lt;dependency\&gt;</span><br><span class="line">        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;</span><br><span class="line">        &lt;artifactId\&gt;logback-classic&lt;/artifactId\&gt;</span><br><span class="line">        &lt;version\&gt;1.2.3&lt;/version\&gt;</span><br><span class="line">    &lt;/dependency\&gt;</span><br><span class="line">&lt;/dependencies\&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code>&lt;dependencies\&gt;
+    &lt;dependency\&gt;
+        &lt;groupId\&gt;org.slf4j&lt;/groupId\&gt;
+        &lt;artifactId\&gt;slf4j-api&lt;/artifactId\&gt;
+        &lt;version\&gt;1.7.7&lt;/version\&gt;
+    &lt;/dependency\&gt;
+    &lt;dependency\&gt;
+        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;
+        &lt;artifactId\&gt;logback-core&lt;/artifactId\&gt;
+        &lt;version\&gt;1.2.3&lt;/version\&gt;
+    &lt;/dependency\&gt;
+    &lt;dependency\&gt;
+        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;
+        &lt;artifactId\&gt;logback-access&lt;/artifactId\&gt;
+        &lt;version\&gt;1.2.3&lt;/version\&gt;
+    &lt;/dependency\&gt;
+    &lt;dependency\&gt;
+        &lt;groupId\&gt;ch.qos.logback&lt;/groupId\&gt;
+        &lt;artifactId\&gt;logback-classic&lt;/artifactId\&gt;
+        &lt;version\&gt;1.2.3&lt;/version\&gt;
+    &lt;/dependency\&gt;
+&lt;/dependencies\&gt;
+</code></pre>
 <p>程序跑起来，输出截图如下。</p>
 <p><img src="https://img2020.cnblogs.com/blog/1514436/202004/1514436-20200421093317039-896436584.png"></p>
 <p><strong>根据输出结果分析，能够得到两条结论。</strong></p>
@@ -208,8 +248,25 @@
 <p><strong>第二：</strong>如蓝色圈住部分所示，当调用 MDC.remove(Key) 后，便可将业务字段从 MDC 中删除，日志中就不再打印请求 ID 啦；</p>
 <p><strong>趁热打铁，我们迅速看看在多线程情况下，使用 MDC 会发生什么现象呢？</strong></p>
 <p>还是基于上面的代码，把代码段放到了线程体内，稍微进行改造了一下，代码如下。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.slf4j.MDC; import java.util.UUID; /\*\* \* MDC快速入门示例</span><br><span class="line"></span><br><span class="line">public class SimpleMDC &#123; public static void main(String\[\] args) &#123; new BizHandle(&quot;F0000&quot;).start(); new BizHandle(&quot;F9999&quot;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125; class BizHandle extends Thread &#123; private static final Logger logger = LoggerFactory.getLogger(SimpleMDC.class); public static final String REQ\_ID = &quot;REQ\_ID&quot;; private String funCode; public BizHandle(String funCode) &#123; this.funCode = funCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override public void run() &#123;</span><br><span class="line">        MDC.put(REQ\_ID, UUID.randomUUID().toString());</span><br><span class="line">        logger.info(&quot;开始调用服务&#123;&#125;，进行业务处理&quot;, funCode); try &#123;</span><br><span class="line">            Thread.sleep(10000);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            logger.info(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        logger.info(&quot;服务&#123;&#125;处理完毕，可以释放空间了，避免内存泄露&quot;, funCode);</span><br><span class="line">        MDC.remove(REQ\_ID);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.slf4j.MDC; import java.util.UUID; /\*\* \* MDC快速入门示例
 
+public class SimpleMDC &#123; public static void main(String\[\] args) &#123; new BizHandle(&quot;F0000&quot;).start(); new BizHandle(&quot;F9999&quot;).start();
+    &#125;
+&#125; class BizHandle extends Thread &#123; private static final Logger logger = LoggerFactory.getLogger(SimpleMDC.class); public static final String REQ\_ID = &quot;REQ\_ID&quot;; private String funCode; public BizHandle(String funCode) &#123; this.funCode = funCode;
+    &#125;
+
+    @Override public void run() &#123;
+        MDC.put(REQ\_ID, UUID.randomUUID().toString());
+        logger.info(&quot;开始调用服务&#123;&#125;，进行业务处理&quot;, funCode); try &#123;
+            Thread.sleep(10000);
+        &#125; catch (InterruptedException e) &#123;
+            logger.info(e.getMessage());
+        &#125;
+        logger.info(&quot;服务&#123;&#125;处理完毕，可以释放空间了，避免内存泄露&quot;, funCode);
+        MDC.remove(REQ\_ID);
+    &#125;
+&#125;
+</code></pre>
 <p>程序跑起来看看效果。</p>
 <p><img src="https://img2020.cnblogs.com/blog/1514436/202004/1514436-20200421093428330-1115573994.png"></p>
 <p>依据程序输出进行分析，能够看到线程 Thread-0 与 Thread-1 在 MDC 中放入的 REQ_ID 的值是互不影响，也就是说 MDC 中的值是与线程绑定在一起的。</p>
@@ -220,8 +277,8 @@
 <p>通过快速入门的程序，得知 MDC 的值与线程是绑定在一起的，不同线程互不影响，MDC 背后到底是怎么实现的呢？不妨从源码上看一看。</p>
 <h1 id="2-MDC-源码解读"><a href="#2-MDC-源码解读" class="headerlink" title="2. MDC 源码解读"></a><strong><strong>2.</strong></strong> <strong>MDC 源码解读</strong></h1><p>解读源码之前，要提提 SLF4J，全称是 Simple Logging Facade for Java，翻译过来就是「一套简单的日志门面」。是为了让研发人员在项目中切换日志组件的方便，特意抽象出的一层。</p>
 <p><strong>项目开发中经常这么定义日志对象：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Logger logger = LoggerFactory.getLogger(SimpleMDC.class)</span><br></pre></td></tr></table></figure>
-
+<pre><code>Logger logger = LoggerFactory.getLogger(SimpleMDC.class)
+</code></pre>
 <p>其中 Logger 就来自于 SLF4J 的规范包，项目中一旦这样定义 Logger，在底层就可以无缝切换 logback、log4j 等日志组件啦，这或许就是 Java 为什么要提倡要面向接口编程的好处。</p>
 <p>见证奇迹的时刻要到了，下面就好好揭秘一下 MDC 背后藏着什么东东？</p>
 <p>首先通过 org.slf4j.MDC 的源码，可以很清楚的知道 MDC 主要是通过 MDCAdapter 来完成 put、get、remove 等操作。</p>
